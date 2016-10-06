@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "VEBPEnumeration.h"
+#include "EBPOperations.h"
 
 
 void SetOneBitNumberOnEachSectionVEBP(int LeftOneBitsNumber, int currentColumn, vector<int> result, int LastOneBitsNumber)
@@ -26,32 +27,9 @@ void SetOneBitNumberOnEachSectionVEBP(int LeftOneBitsNumber, int currentColumn, 
 	}
 }
 
-void allCombinationsOfKInN(int startIndex, int leftElements, vector<int> result, vector<vector<int>> &VEBP)
-{
-	if (leftElements == 0)
-	{
-		/*for (vector<int>::iterator it = result.begin(); it != result.end(); ++it)
-		{
-			cout << *it;
-		}
-		cout << endl;*/
-		VEBP.push_back(result);
-		//send message to HEBP enumeration..//
-	}
-	else
-	{
-		for (int i = startIndex; i <= N - leftElements + 1; i++)
-		{
-			result.push_back(i);
-			allCombinationsOfKInN(startIndex + 1, leftElements - 1, result, VEBP);
-			result.pop_back();
-		}
-	}
-}
-
 void distinctVEBPEnumeration(vector<int> result)
 {
-	//cout << "result " << endl;
+	cout << "result " << endl;
 	
 	vector<vector<vector<int>>> VEBPSet;
 	///combinatorics based on #1bits in each section of VEBP///
@@ -60,37 +38,56 @@ void distinctVEBPEnumeration(vector<int> result)
 		int K = *it;
 		vector<int> resultForCombinations;
 		vector<vector<int>> VEBP;
-				
+		cout << K << " ";
 		allCombinationsOfKInN(1, K, resultForCombinations, VEBP);
+		
 		VEBPSet.push_back(VEBP);
 	}
-	/*for (int i = 0; i < VEBPSet.size(); i++)
-	{
-		cout << "section Number: " << i + 1 << endl;
-		for (int j = 0; j < VEBPSet[i].size(); j++)
-		{
-			cout << "size: " << VEBPSet[i][j].size() << endl;
-			for (int k = 0; k < VEBPSet[i][j].size(); k++)
-				cout << VEBPSet[i][j][k] << " ";
-			cout << endl;
-		}
-	}
-	cout << endl;*/
+	cout << endl;
+	
+	vector<vector<int>> VEBP;
+	completeEachVEBP(0, VEBPSet, VEBP);
+	cout << endl;
 }
 
-void completeEachVEBP(int sectionNumber, vector<vector<vector<int>>> VEBPSet, vector<vector<int>> result)
+void allCombinationsOfKInN(int startIndex, int leftElements, vector<int> result, vector<vector<int>> &VEBP)
 {
-	if (sectionNumber == N)
+	if (leftElements == 0)
+		VEBP.push_back(result);
+	else
 	{
-		for (vector<vector<int>>::iterator it = result.begin(); it != result.end(); ++it)
+		for (int i = startIndex; i <= N - leftElements + 1; i++)
 		{
-			//cout << *it;
+			result.push_back(i);
+			allCombinationsOfKInN(i + 1, leftElements - 1, result, VEBP);
+			result.pop_back();
 		}
+	}
+}
 
-		cout << endl;
+void completeEachVEBP(int sectionNumber, vector<vector<vector<int>>> VEBPSet, vector<vector<int>> VEBP)
+{
+	if (sectionNumber == N-1)
+	{
+		if(checkIfDistinct(VEBP))
+			printEBP(VEBP);
+		//send message to HEBP enumeration..//
+
+
+		
+		//getchar();
+
 	}
 	else
 	{
+		for (int i = 0; i < VEBPSet[sectionNumber].size(); i++)
+		{
+			VEBP.push_back(VEBPSet[sectionNumber][i]);
+			
+			completeEachVEBP(sectionNumber + 1, VEBPSet, VEBP);
 
+			VEBP.pop_back();
+		}
 	}
 }
+
