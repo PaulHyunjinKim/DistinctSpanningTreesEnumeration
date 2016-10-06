@@ -86,6 +86,7 @@ void completeEachVEBP(int sectionNumber, vector<vector<vector<int>>> VEBPSet, ve
 		{
 			//cout << *it;
 		}
+
 		cout << endl;
 	}
 	else
