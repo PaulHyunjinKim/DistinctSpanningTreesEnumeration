@@ -17,8 +17,7 @@ void SetOneBitNumberOnEachSectionVEBP(int LeftOneBitsNumber, int currentColumn, 
 	{
 		int MinNumber = max(1, LeftOneBitsNumber - N*(N - 1 - currentColumn));
 		int MaxNumber = min(N, LeftOneBitsNumber - (N - 1 - currentColumn));
-
-
+		
 		for (LastOneBitsNumber = MinNumber; LastOneBitsNumber <= MaxNumber; LastOneBitsNumber++)
 		{
 			result.push_back(LastOneBitsNumber);
