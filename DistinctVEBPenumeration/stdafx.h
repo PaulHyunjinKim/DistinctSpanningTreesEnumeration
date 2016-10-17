@@ -12,10 +12,12 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
+#include <map>
 
 using namespace std;
 
-#define N 3
+#define M 3  //#columns
+#define N 3  //#rows
 
 
 // TODO: reference additional headers your program requires here

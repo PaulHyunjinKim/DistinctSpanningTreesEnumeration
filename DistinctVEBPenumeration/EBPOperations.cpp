@@ -43,7 +43,7 @@ vector<vector<int>> inverseEBP(vector<vector<int>> EBP)
 		vector<int> inversedSection;
 		for (vector<int>::iterator it2 = it->begin(); it2 != it->end(); it2++)
 		{
-			int inversedBinaryPosition = N - *it2 + 1;
+			int inversedBinaryPosition = M - *it2 + 1;
 			inversedSection.push_back(inversedBinaryPosition);
 		}
 		inversedEBP.push_back(inversedSection);
@@ -71,6 +71,21 @@ void printEBP(vector<vector<int>> EBP)
 		cout << " ";
 	}
 	cout << endl;
+}
+
+void allCombinationsOfKInN(int startIndex, int leftElements, int n, vector<int> result, vector<vector<int>> &EBP)
+{
+	if (leftElements == 0)
+		EBP.push_back(result);
+	else
+	{
+		for (int i = startIndex; i <= n - leftElements + 1; i++)
+		{
+			result.push_back(i);
+			allCombinationsOfKInN(i + 1, leftElements - 1, n, result, EBP);
+			result.pop_back();
+		}
+	}
 }
 
 vector<vector<int>> LargerEBP(vector<vector<int>> EBP1, vector<vector<int>> EBP2)
