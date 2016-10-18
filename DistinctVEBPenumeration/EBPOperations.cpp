@@ -11,15 +11,6 @@ bool checkIfDistinct(vector<vector<int>> EBP)
 	symmetricEBPs[1] = switchEBP(EBP);
 	symmetricEBPs[2] = inverseEBP(switchEBP(EBP));
 
-	/*printEBP(EBP);
-	cout << endl;
-	for (int i = 0; i < 3; i++)
-	{
-		printEBP(symmetricEBPs[i]);
-		cout << endl;
-	}*/
-
-
 	for (int i = 0; i < 3; i++)
 	{
 		if (EqualEBP(EBP, LargerEBP(EBP, symmetricEBPs[i])))
@@ -70,6 +61,13 @@ void printEBP(vector<vector<int>> EBP)
 			cout << *it2;
 		cout << " ";
 	}
+	cout << endl;
+}
+
+void printEBPi(vector<int> EBPi)
+{
+	for (vector<int>::iterator it = EBPi.begin(); it != EBPi.end(); ++it)
+		cout << *it;
 	cout << endl;
 }
 
