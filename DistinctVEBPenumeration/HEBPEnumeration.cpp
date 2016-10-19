@@ -19,7 +19,7 @@ void HEBPEnumeration(vector<vector<int>> VEBP)
 	//TODO: initial CC# with VEBPPrimei
 	vector<int> VEBPPrimei = VEBPPrime[0];
 	HENumb = M*N - 1 - VENumb;
-	CCNumb[1] = 1; CCNumb[2] = 1; CCNumb[3] = 1;//assume..111
+	CCNumb[1] = 1; CCNumb[2] = 3; CCNumb[3] = 1;//assume..111
 	distinctHEBPEnumeartion(0, CCNumb, VEBPPrime, HENumb);
 	getchar();
 }
@@ -65,27 +65,89 @@ void distinctHEBPEnumeartion(int currentColumn, vector<int> CCNumb, vector<vecto
 		for (map<int, vector<vector<int>>>::iterator it = HEBPiTree.begin(); it != HEBPiTree.end(); it++)
 			size2Numb += it->second.size();
 
-		int MinNumber = max(size1Numb, HENumb - N*(M - 1 - currentColumn));
-		int MaxNumber = min(size2Numb, HENumb - (M - 1 - currentColumn));
-
+		int MinNumber = max(size1Numb, HENumb - N*(M - 1 - (currentColumn + 1)));
+		int MaxNumber = min(size2Numb, HENumb - (M - 1 - (currentColumn + 1)));
+		
 		for (int HENumbi = MinNumber; HENumbi <= MaxNumber; HENumbi++)
 		{
-			generateHEBPi(HENumbi, 0, 0, currentColumn, CCNumb, VEBPPrime, size1Numb, size2Numb, HEBPiTree);
+			vector<int> HEBPi;
+			generateHEBPi(HENumbi, HENumbi, 0, currentColumn, CCNumb, VEBPPrime, size1Numb, size2Numb, HEBPiTree, HEBPi);
 		}
 		
 	}
 }
 
 
-void generateHEBPi(int HENumbi, int leftHENumbi, int indexInMapKey, int currentColumn, vector<int> CCNumb, vector<vector<int>> VEBPPrime, int size1Numb, int size2Numb, map<int, vector<vector<int>>> HEBPiTree)
+void generateHEBPi(int HENumbi, int leftHENumbi, int indexInMapKey, int currentColumn, vector<int> CCNumb, vector<vector<int>> VEBPPrime, int size1Numb, int size2Numb, map<int, vector<vector<int>>> HEBPiTree, vector<int> HEBPi)
 {
 	if (indexInMapKey > HEBPiTree.size()-1)
 	{
+		printEBPi(HEBPi);
 		//end
 	}
 	else
 	{
+		map<int, vector<vector<int>>>::iterator iter = HEBPiTree.begin();
+		advance(iter, indexInMapKey);
+		
+		vector<vector<int>> treeInEachCC = iter->second;
+		int sizeOFEachCC = treeInEachCC.size();
+		int minNumber = max(1, leftHENumbi - (size2Numb - sizeOFEachCC));
+		int maxNumber = min(sizeOFEachCC, leftHENumbi - (size1Numb - 1));
 
+		for (int oneBitsInEachCC = minNumber; oneBitsInEachCC <= maxNumber; oneBitsInEachCC++)
+		{
+			//comb
+			vector<int> resultForCombinations;
+			vector<vector<int>> combSetInEachCC;
+			allCombinationsOfKInN(1, oneBitsInEachCC, sizeOFEachCC, resultForCombinations, combSetInEachCC);
+			
+			leftHENumbi -= oneBitsInEachCC;
+			size2Numb -= sizeOFEachCC;
+			size1Numb -= 1;
+			cout << leftHENumbi << " " << size2Numb << " " << size1Numb << endl;
+			for (vector<vector<int>>::iterator comb = combSetInEachCC.begin(); comb != combSetInEachCC.end(); comb++)
+			{		
+				printEBPi(*comb);
+				vector<vector<int>> CCCombInHEBPiSet;
+				vector<int> CCCombInHEBPi;
+				combinationOneBitForEachCCinHEBPTree(treeInEachCC, 0, *comb, CCCombInHEBPiSet, CCCombInHEBPi);
+				printEBP(CCCombInHEBPiSet);
+				for (vector<vector<int>>::iterator eachCombInSet = CCCombInHEBPiSet.begin(); eachCombInSet != CCCombInHEBPiSet.end(); eachCombInSet++)
+				{
+					for (vector<int>::iterator it = eachCombInSet->begin(); it != eachCombInSet->end(); eachCombInSet++)
+					{
+						HEBPi.push_back(*it);
+					}
+						
+					generateHEBPi(HENumbi, leftHENumbi, indexInMapKey + 1, currentColumn, CCNumb, VEBPPrime, size1Numb, size2Numb, HEBPiTree, HEBPi);
+				}
+				
+			}
+
+		}
+	}
+}
+
+void combinationOneBitForEachCCinHEBPTree(vector<vector<int>> treeInEachCC, int indexOfEachGroupInCC, vector<int> comb, vector<vector<int>> &CCCombInHEBPiSet, vector<int> CCCombInHEBPi)
+{
+	if (indexOfEachGroupInCC > comb.size() - 1)
+	{
+		CCCombInHEBPiSet.push_back(CCCombInHEBPi);
+	}
+	else
+	{
+		int indexOfOneBitInCC = comb[indexOfEachGroupInCC] - 1;
+		vector<int> resultForCombinations;
+		vector<vector<int>> combInEachGroupInCCSet;
+		allCombinationsOfKInN(1, 1, treeInEachCC[indexOfOneBitInCC].size(), resultForCombinations, combInEachGroupInCCSet);
+		for (vector<vector<int>>::iterator eachComb = combInEachGroupInCCSet.begin(); eachComb != combInEachGroupInCCSet.end(); eachComb++)
+		{
+			int indexOFOneBitInHEBPi = treeInEachCC[indexOfOneBitInCC][eachComb[0][0] - 1];
+			CCCombInHEBPi.push_back(indexOFOneBitInHEBPi);
+			combinationOneBitForEachCCinHEBPTree(treeInEachCC, indexOfEachGroupInCC + 1, comb, CCCombInHEBPiSet, CCCombInHEBPi);
+			CCCombInHEBPi.pop_back();
+		}
 	}
 }
 
@@ -138,6 +200,8 @@ map<int, vector<vector<int>>> generateTreeForHEBPi(vector<int> CCNumb, vector<in
 
 	return resultTree;
 }
+
+
 
 void printHEBPiTree(map<int, vector<vector<int>>> HEBPiTree)
 {
