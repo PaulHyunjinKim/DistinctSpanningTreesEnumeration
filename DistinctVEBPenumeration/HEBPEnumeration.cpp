@@ -5,7 +5,7 @@
 void HEBPEnumeration(vector<vector<int>> VEBP)
 {
 	//recieve message from VEBP enumeration
-	printEBP(VEBP);
+	cout << "VEBP: ";printEBP(VEBP);
 	
 	int VENumb = 0;
 	int HENumb = 0;
@@ -19,8 +19,10 @@ void HEBPEnumeration(vector<vector<int>> VEBP)
 	//TODO: initial CC# with VEBPPrimei
 	vector<int> VEBPPrimei = VEBPPrime[0];
 	HENumb = M*N - 1 - VENumb;
-	CCNumb[1] = 1; CCNumb[2] = 1; CCNumb[3] = 2;//assume..111
-	distinctHEBPEnumeartion(0, CCNumb, VEBPPrime, HENumb);
+	CCNumb[1] = 1; CCNumb[2] = 1; CCNumb[3] = 1;//assume..111
+	
+	vector<vector<int>> HEBP;
+	distinctHEBPEnumeartion(0, CCNumb, VEBPPrime, HENumb, VENumb, HEBP);
 	getchar();
 }
 
@@ -40,11 +42,40 @@ void VEBPPrimeAndVENumbFromVEBP(vector<vector<int>> VEBP, vector<vector<int>> &V
 }
 
 
-void distinctHEBPEnumeartion(int currentColumn, vector<int> CCNumb, vector<vector<int>> VEBPPrime, int HENumb)//enumerate all distinct HEBP based on VEBP
+void distinctHEBPEnumeartion(int currentColumn, vector<int> CCNumb, vector<vector<int>> VEBPPrime, int HENumb, int VENumb, vector<vector<int>> HEBP)//enumerate all distinct HEBP based on VEBP
 {
-	if (currentColumn > M - 1)
+	
+	if (currentColumn > M - 2)
 	{
-		//end..finish enumeration.. after check symmetry.. print or store HEBP//
+		//end..finish enumeration.. after check symmetry.. print or store HEBP
+		//if VEBPprime == inv sym, switch op on HEBP --> if HEBP >= max(HEBP, switch(HEBP)) --> OK. 
+		//if VEBPPrime == switch sym, inv on HEBP
+		// if VEBPPrime == invSwitch, invSwitch on HEBP
+		cout << "HEBP: ";printEBP(HEBP);
+		bool HEBPIsDistinct = true;
+		/*if (EqualEBP(VEBPPrime, inverseEBP(VEBPPrime)))
+		{
+			if (!EqualEBP(HEBP, LargerEBP(HEBP, switchEBP(HEBP))))
+				HEBPIsDistinct = false;
+		}
+		if (EqualEBP(VEBPPrime, switchEBP(VEBPPrime)))
+		{
+			if (!EqualEBP(HEBP, LargerEBP(HEBP, inverseEBP(HEBP))))
+				HEBPIsDistinct = false;
+		}
+		if (EqualEBP(VEBPPrime, inverseEBP(switchEBP(VEBPPrime))))
+		{
+			if (!EqualEBP(HEBP, LargerEBP(HEBP, switchEBP(inverseEBP(HEBP)))))
+				HEBPIsDistinct = false;
+		}*/
+		if((M == N) && (M / 2 == 1)  && (VENumb == (M*N - 1) / 2))
+		{
+			cout << "check rotational" << endl;
+			//check rotational symmetry
+		}
+
+		if(HEBPIsDistinct)
+		cout << "end enumeration" << endl;
 	}
 	else 
 	{
@@ -71,19 +102,26 @@ void distinctHEBPEnumeartion(int currentColumn, vector<int> CCNumb, vector<vecto
 		for (int HENumbi = MinNumber; HENumbi <= MaxNumber; HENumbi++)
 		{
 			vector<int> HEBPi;
-			generateHEBPi(HENumbi, HENumbi, 0, currentColumn, CCNumb, VEBPPrime, size1Numb, size2Numb, HEBPiTree, HEBPi);
+			generateHEBPi(VENumb, HENumb, HENumbi, HENumbi, 0, currentColumn, CCNumb, VEBPPrime, size1Numb, size2Numb, HEBPiTree, HEBPi, HEBP);
 		}
 		
 	}
 }
 
 
-void generateHEBPi(int HENumbi, int leftHENumbi, int indexInMapKey, int currentColumn, vector<int> CCNumb, vector<vector<int>> VEBPPrime, int size1Numb, int size2Numb, map<int, vector<vector<int>>> HEBPiTree, vector<int> HEBPi)
+void generateHEBPi(int VENumb, int HENumb, int HENumbi, int leftHENumbi, int indexInMapKey, int currentColumn, vector<int> CCNumb, vector<vector<int>> VEBPPrime, int size1Numb, int size2Numb, map<int, vector<vector<int>>> HEBPiTree, vector<int> HEBPi, vector<vector<int>> HEBP)
 {
 	if (indexInMapKey > HEBPiTree.size()-1)
 	{
-		cout << "HEBPi: " << endl;
+		cout << "hebp"<<currentColumn<<": " << endl;
 		printEBPi(HEBPi);
+
+		//Calculate new CCNumb with HEBPi and VEBP'i+1
+		vector<int> VEBPPrime_iplus1 = VEBPPrime[currentColumn];
+		HENumb -= HENumbi;
+		HEBP.push_back(HEBPi);
+		distinctHEBPEnumeartion(currentColumn + 1, CCNumb, VEBPPrime, HENumb, VENumb, HEBP);
+		//HEBP.pop_back();
 		//end
 	}
 	else
@@ -120,7 +158,7 @@ void generateHEBPi(int HENumbi, int leftHENumbi, int indexInMapKey, int currentC
 					{
 						HEBPi.push_back(*it);
 					}
-					generateHEBPi(HENumbi, leftHENumbi, indexInMapKey + 1, currentColumn, CCNumb, VEBPPrime, size1Numb, size2Numb, HEBPiTree, HEBPi);
+					generateHEBPi(VENumb, HENumb, HENumbi, leftHENumbi, indexInMapKey + 1, currentColumn, CCNumb, VEBPPrime, size1Numb, size2Numb, HEBPiTree, HEBPi, HEBP);
 					for (vector<int>::iterator it = eachCombInSet->begin(); it != eachCombInSet->end(); it++)
 					{
 						HEBPi.pop_back();
