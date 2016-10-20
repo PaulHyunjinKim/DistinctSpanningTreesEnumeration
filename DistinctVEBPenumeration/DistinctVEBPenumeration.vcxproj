@@ -152,7 +152,7 @@
     <ClInclude Include="VEBPEnumeration.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="DistinctEBPenumeration.cpp" />
+    <ClCompile Include="DistictEBPEnumerations.cpp" />
     <ClCompile Include="EBPOperations.cpp" />
     <ClCompile Include="HEBPEnumeration.cpp" />
     <ClCompile Include="stdafx.cpp">

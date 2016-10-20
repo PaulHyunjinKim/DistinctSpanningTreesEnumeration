@@ -44,10 +44,10 @@
     <ClCompile Include="EBPOperations.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="DistinctEBPenumeration.cpp">
+    <ClCompile Include="HEBPEnumeration.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="HEBPEnumeration.cpp">
+    <ClCompile Include="DistictEBPEnumerations.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
