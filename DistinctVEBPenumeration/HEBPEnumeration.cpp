@@ -19,7 +19,7 @@ void HEBPEnumeration(vector<vector<int>> VEBP)
 	//TODO: initial CC# with VEBPPrimei
 	vector<int> VEBPPrimei = VEBPPrime[0];
 	HENumb = M*N - 1 - VENumb;
-	CCNumb[1] = 1; CCNumb[2] = 3; CCNumb[3] = 1;//assume..111
+	CCNumb[1] = 1; CCNumb[2] = 1; CCNumb[3] = 2;//assume..111
 	distinctHEBPEnumeartion(0, CCNumb, VEBPPrime, HENumb);
 	getchar();
 }
@@ -82,6 +82,7 @@ void generateHEBPi(int HENumbi, int leftHENumbi, int indexInMapKey, int currentC
 {
 	if (indexInMapKey > HEBPiTree.size()-1)
 	{
+		cout << "HEBPi: " << endl;
 		printEBPi(HEBPi);
 		//end
 	}
@@ -105,22 +106,25 @@ void generateHEBPi(int HENumbi, int leftHENumbi, int indexInMapKey, int currentC
 			leftHENumbi -= oneBitsInEachCC;
 			size2Numb -= sizeOFEachCC;
 			size1Numb -= 1;
-			cout << leftHENumbi << " " << size2Numb << " " << size1Numb << endl;
+			//cout << leftHENumbi << " " << size2Numb << " " << size1Numb << endl;
 			for (vector<vector<int>>::iterator comb = combSetInEachCC.begin(); comb != combSetInEachCC.end(); comb++)
 			{		
-				printEBPi(*comb);
+				//cout << "comb: ";printEBPi(*comb);
 				vector<vector<int>> CCCombInHEBPiSet;
 				vector<int> CCCombInHEBPi;
 				combinationOneBitForEachCCinHEBPTree(treeInEachCC, 0, *comb, CCCombInHEBPiSet, CCCombInHEBPi);
-				printEBP(CCCombInHEBPiSet);
+				//cout << "combSet: ";printEBP(CCCombInHEBPiSet);
 				for (vector<vector<int>>::iterator eachCombInSet = CCCombInHEBPiSet.begin(); eachCombInSet != CCCombInHEBPiSet.end(); eachCombInSet++)
 				{
-					for (vector<int>::iterator it = eachCombInSet->begin(); it != eachCombInSet->end(); eachCombInSet++)
+					for (vector<int>::iterator it = eachCombInSet->begin(); it != eachCombInSet->end(); it++)
 					{
 						HEBPi.push_back(*it);
 					}
-						
 					generateHEBPi(HENumbi, leftHENumbi, indexInMapKey + 1, currentColumn, CCNumb, VEBPPrime, size1Numb, size2Numb, HEBPiTree, HEBPi);
+					for (vector<int>::iterator it = eachCombInSet->begin(); it != eachCombInSet->end(); it++)
+					{
+						HEBPi.pop_back();
+					}
 				}
 				
 			}
