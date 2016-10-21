@@ -10,14 +10,15 @@
 #include <stdio.h>
 #include <tchar.h>
 #include <iostream>
+#include <fstream>
 #include <vector>
 #include <algorithm>
 #include <map>
 
 using namespace std;
 
-#define M 3  //#columns
-#define N 3  //#rows
+#define M 4 //#columns
+#define N 4  //#rows
 
 
 // TODO: reference additional headers your program requires here

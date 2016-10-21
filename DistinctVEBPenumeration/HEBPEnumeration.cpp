@@ -2,10 +2,11 @@
 #include "HEBPEnumeration.h"
 #include "EBPOperations.h"
 
-void HEBPEnumeration(vector<vector<int>> VEBP)
+
+void HEBPEnumeration(vector<vector<int>> VEBP, ofstream &myFile)
 {
 	//recieve message from VEBP enumeration
-	cout << "VEBP: VEBP:///////////////";printEBP(VEBP);
+	//cout << "VEBP: VEBP:///////////////";printEBP(VEBP);
 	
 	int VENumb = 0;
 	int HENumb = 0;
@@ -15,10 +16,12 @@ void HEBPEnumeration(vector<vector<int>> VEBP)
 
 	vector<vector<int>> CCNumbMatrix(M, vector<int>(N + 1, 0));
 	CCNumbMatFromVEBPPrime(CCNumbMatrix, VEBPPrime);
-		
+	
+	
+
 	vector<vector<int>> HEBP;
-	distinctHEBPEnumeartion(0, CCNumbMatrix, HENumb, VENumb, HEBP);
-	getchar();
+	distinctHEBPEnumeartion(0, CCNumbMatrix, HENumb, VENumb, HEBP, VEBP, myFile);
+	//getchar();
 }
 
 void CCNumbMatFromVEBPPrime(vector<vector<int>> &CCNumbMatrix, vector<vector<int>> VEBPPrime)
@@ -57,46 +60,36 @@ void VEBPPrimeAndVENumbFromVEBP(vector<vector<int>> VEBP, vector<vector<int>> &V
 }
 
 
-void distinctHEBPEnumeartion(int currentColumn, vector<vector<int>> CCNumbMatrix, int HENumb, int VENumb, vector<vector<int>> HEBP)//enumerate all distinct HEBP based on VEBP
+void distinctHEBPEnumeartion(int currentColumn, vector<vector<int>> CCNumbMatrix, int HENumb, int VENumb, vector<vector<int>> HEBP, vector<vector<int>> VEBP, ofstream &myFile)//enumerate all distinct HEBP based on VEBP
 {
 	
 	if (currentColumn > M - 2)
 	{
-		cout << "CCNumbMAtrix: "; printEBP(CCNumbMatrix); cout << endl;
-		cout << "final CC#://////////////////// "; printEBPi(CCNumbMatrix[currentColumn]); cout << endl;
+		//cout << "CCNumbMAtrix: "; printEBP(CCNumbMatrix); cout << endl;
+		//cout << "final CC#://////////////////// "; printEBPi(CCNumbMatrix[currentColumn]); cout << endl;
 
 		//end..finish enumeration.. after check symmetry.. print or store HEBP
-		//if VEBPprime == inv sym, switch op on HEBP --> if HEBP >= max(HEBP, switch(HEBP)) --> OK. 
-		//if VEBPPrime == switch sym, inv on HEBP
-		// if VEBPPrime == invSwitch, invSwitch on HEBP
-		cout << "HEBP: ";printEBP(HEBP);
+
+		//cout << "HEBP: ";printEBP(HEBP);
+		//cout << "VEBP: "; printEBP(VEBP);
+		
 		bool HEBPIsDistinct = true;
-		/*if (EqualEBP(VEBPPrime, inverseEBP(VEBPPrime)))
-		{
-			if (!EqualEBP(HEBP, LargerEBP(HEBP, switchEBP(HEBP))))
-				HEBPIsDistinct = false;
-		}
-		if (EqualEBP(VEBPPrime, switchEBP(VEBPPrime)))
-		{
-			if (!EqualEBP(HEBP, LargerEBP(HEBP, inverseEBP(HEBP))))
-				HEBPIsDistinct = false;
-		}
-		if (EqualEBP(VEBPPrime, inverseEBP(switchEBP(VEBPPrime))))
-		{
-			if (!EqualEBP(HEBP, LargerEBP(HEBP, switchEBP(inverseEBP(HEBP)))))
-				HEBPIsDistinct = false;
-		}*/
-		if((M == N) && (M / 2 == 1)  && (VENumb == (M*N - 1) / 2))
+		bool checkMirroredSymmetry = checkIfDistinctHEBP(VEBP, HEBP);
+		
+		if((M == N) && (M / 2 == 1)  && (VENumb == (M*N - 1) / 2) && checkMirroredSymmetry)
 		{
 			//cout << "check rotational" << endl;
 			//check rotational symmetry
+			HEBPIsDistinct = checkRotationalSymmetryOfHEBP(VEBP, HEBP);
 		}
 
 		if (HEBPIsDistinct)
 		{
-			//cout << "end enumeration" << endl;
+			writeEBP(VEBP, myFile);
+			writeEBP(HEBP, myFile);
+			/*cout << "VEBP: "; printEBP(VEBP);
+			cout << "HEBP: "; printEBP(HEBP);*/
 		}
-		
 	}
 	else 
 	{
@@ -104,7 +97,7 @@ void distinctHEBPEnumeartion(int currentColumn, vector<vector<int>> CCNumbMatrix
 
 
 		HEBPiTree = generateTreeForHEBPi(CCNumbMatrix[currentColumn], CCNumbMatrix[currentColumn+1]);
-		printHEBPiTree(HEBPiTree);
+		//cout << "hebpiTREE"; printHEBPiTree(HEBPiTree);
 
 		int size1Numb = HEBPiTree.size();
 		int size2Numb = 0;
@@ -117,29 +110,26 @@ void distinctHEBPEnumeartion(int currentColumn, vector<vector<int>> CCNumbMatrix
 		for (int HENumbi = MinNumber; HENumbi <= MaxNumber; HENumbi++)
 		{
 			vector<int> HEBPi;
-			generateHEBPi(VENumb, HENumb, HENumbi, HENumbi, 0, currentColumn, CCNumbMatrix, size1Numb, size2Numb, HEBPiTree, HEBPi, HEBP);
+			generateHEBPi(VENumb, HENumb, HENumbi, HENumbi, 0, currentColumn, CCNumbMatrix, size1Numb, size2Numb, HEBPiTree, HEBPi, HEBP, VEBP, myFile);
 		}
 		
 	}
 }
 
 
-void generateHEBPi(int VENumb, int HENumb, int HENumbi, int leftHENumbi, int indexInMapKey, int currentColumn, vector<vector<int>> CCNumbMatrix, int size1Numb, int size2Numb, map<int, vector<vector<int>>> HEBPiTree, vector<int> HEBPi, vector<vector<int>> HEBP)
+void generateHEBPi(int VENumb, int HENumb, int HENumbi, int leftHENumbi, int indexInMapKey, int currentColumn, vector<vector<int>> CCNumbMatrix, int size1Numb, int size2Numb, map<int, vector<vector<int>>> HEBPiTree, vector<int> HEBPi, vector<vector<int>> HEBP, vector<vector<int>> VEBP, ofstream &myFile)
 {
 	if (indexInMapKey > HEBPiTree.size()-1)
 	{
-		cout << "hebp"<<currentColumn<<": " << endl;
-		if (HEBPi.size() != 1)
-			sort(HEBPi.begin(), HEBPi.end());
-		printEBPi(HEBPi);
+		//cout << "hebp"<<currentColumn<<": " << endl;
+		//printEBPi(HEBPi);
 
-		vector<int>::iterator minValue = min_element(CCNumbMatrix[currentColumn + 1].begin() + 1, CCNumbMatrix[currentColumn + 1].end());
-		newCCNumb_iplus1(CCNumbMatrix[currentColumn], HEBPi, CCNumbMatrix[currentColumn+1] , *minValue);
-
+		//vector<int>::iterator minValue = min_element(CCNumbMatrix[currentColumn + 1].begin() + 1, CCNumbMatrix[currentColumn + 1].end());
+		newCCNumb_iplus1(currentColumn, CCNumbMatrix, HEBPi);
 		HENumb -= HENumbi;
 		HEBP.push_back(HEBPi);
 		
-		distinctHEBPEnumeartion(currentColumn + 1, CCNumbMatrix, HENumb, VENumb, HEBP);
+		distinctHEBPEnumeartion(currentColumn + 1, CCNumbMatrix, HENumb, VENumb, HEBP, VEBP, myFile);
 		//HEBP.pop_back();
 		//end
 	}
@@ -177,7 +167,7 @@ void generateHEBPi(int VENumb, int HENumb, int HENumbi, int leftHENumbi, int ind
 					{
 						HEBPi.push_back(*it);
 					}
-					generateHEBPi(VENumb, HENumb, HENumbi, leftHENumbi, indexInMapKey + 1, currentColumn, CCNumbMatrix, size1Numb, size2Numb, HEBPiTree, HEBPi, HEBP);
+					generateHEBPi(VENumb, HENumb, HENumbi, leftHENumbi, indexInMapKey + 1, currentColumn, CCNumbMatrix, size1Numb, size2Numb, HEBPiTree, HEBPi, HEBP, VEBP, myFile);
 					for (vector<int>::iterator it = eachCombInSet->begin(); it != eachCombInSet->end(); it++)
 					{
 						HEBPi.pop_back();
@@ -188,37 +178,85 @@ void generateHEBPi(int VENumb, int HENumb, int HENumbi, int leftHENumbi, int ind
 	}
 }
 
-void newCCNumb_iplus1(vector<int> CCNumb_i, vector<int> HEBPi, vector<int> &CCNumb_iplus1, int minValue)
+void newCCNumb_iplus1(int currentColumn, vector<vector<int>> &CCNumbMatrix,  vector<int> HEBPi)
 {
-	
-	for (vector<int>::iterator it = HEBPi.begin(); it != HEBPi.end(); it++)
+	map<int, vector<int>> CCNumbTree;
+	map<int, vector<int>>::iterator it1;
+	map<int, vector<int>>::iterator it2;
+	initCCNumbTree(CCNumbTree, CCNumbMatrix, currentColumn);
+
+	//printEBP(CCNumbMatrix);
+
+	/*for (map<int, vector<int>>::iterator it = CCNumbTree.begin(); it != CCNumbTree.end(); it++)
 	{
-		int previousValue = CCNumb_iplus1[*it];
-		if (previousValue >= minValue)
+		cout << it->first << " --> ";
+		for (vector<int>::iterator it2 = it->second.begin(); it2 != it->second.end(); it2++)
+		{
+			cout <<"+ "<<  *it2 << endl;
+			
+		}
+	}*/
+
+	for (vector<int>::iterator edgeIndex = HEBPi.begin(); edgeIndex != HEBPi.end(); edgeIndex++)
+	{
+		it1 = CCNumbTree.find(CCNumbMatrix[currentColumn][*edgeIndex]);
+		it2 = CCNumbTree.find(CCNumbMatrix[currentColumn+1][*edgeIndex]);
+		//cout << "it1 "<< CCNumbMatrix[currentColumn][*edgeIndex]<<" it2 "<< CCNumbMatrix[currentColumn + 1][*edgeIndex] << endl;
+		if (CCNumbMatrix[currentColumn][*edgeIndex] < CCNumbMatrix[currentColumn + 1][*edgeIndex])
 		{
 			
-			CCNumb_iplus1[*it] = CCNumb_i[*it];
-			int currentValue = CCNumb_iplus1[*it];
-	
-			for (int nextIndex = *it + 1; nextIndex <= N; nextIndex++)
+			for (vector<int>::iterator iterator = it2->second.begin(); iterator != it2->second.end(); iterator++)
 			{
-				if (CCNumb_iplus1[nextIndex] == previousValue)
-					CCNumb_iplus1[nextIndex] = currentValue;
-				else
-					break;
+				it1->second.push_back(*iterator);
+				//int indexInCCNumb = *iterator - N;
+				int indexInCCNumb = *iterator;
+				if(*iterator>N)
+					indexInCCNumb = *iterator - N;
+				
+				CCNumbMatrix[currentColumn + 1][indexInCCNumb] = it1->first;
 			}
-			for (int nextIndex = *it - 1; nextIndex >= 1; nextIndex--)
-			{
-				if (CCNumb_iplus1[nextIndex] == previousValue)
-					CCNumb_iplus1[nextIndex] = currentValue;
-				else
-					break;
-			}
+			CCNumbTree.erase(it2);
 		}
+		else if (CCNumbMatrix[currentColumn][*edgeIndex] > CCNumbMatrix[currentColumn + 1][*edgeIndex])
+		{
+			
+			for (vector<int>::iterator iterator = it1->second.begin(); iterator != it1->second.end(); iterator++)
+			{
+				it2->second.push_back(*iterator);
+				//int indexInCCnumb = *iterator;
+				int indexInCCNumb = *iterator;
+				if (*iterator>N)
+					indexInCCNumb = *iterator - N;
+				
+				CCNumbMatrix[currentColumn][indexInCCNumb] = it2->first;
+			}
+			CCNumbTree.erase(it1);
+		}
+		else
+			cout << "ERROR!!!!! loop is appeared!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" << endl;
 	}
+
 	
 }
 
+void initCCNumbTree(map<int, vector<int>> &CCNumbTree, vector<vector<int>> CCNumbMatrix, int currentColumn)
+{
+	
+	for (int column = currentColumn; column <= currentColumn + 1; column++)
+	{
+		for (int indexInCCnumb = 1; indexInCCnumb <= N; indexInCCnumb++)
+		{
+			int ccNumb = CCNumbMatrix[column][indexInCCnumb];
+			int indexInTree = indexInCCnumb + (column - currentColumn)*N;
+			map<int, vector<int>>::iterator it;
+			it = CCNumbTree.find(ccNumb);
+			if (it != CCNumbTree.end())
+				it->second.push_back(indexInTree);
+			else
+				CCNumbTree.insert(pair<int,vector<int>>(ccNumb, vector<int>(1, indexInTree)));
+		}
+	}
+}
 
 void combinationOneBitForEachCCinHEBPTree(vector<vector<int>> treeInEachCC, int indexOfEachGroupInCC, vector<int> comb, vector<vector<int>> &CCCombInHEBPiSet, vector<int> CCCombInHEBPi)
 {

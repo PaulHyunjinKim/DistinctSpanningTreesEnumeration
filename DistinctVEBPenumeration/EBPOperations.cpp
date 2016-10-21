@@ -7,9 +7,9 @@ bool checkIfDistinct(vector<vector<int>> EBP)
 
 	vector<vector<vector<int>>> symmetricEBPs(3);
 
-	symmetricEBPs[0] = inverseEBP(EBP);
-	symmetricEBPs[1] = switchEBP(EBP);
-	symmetricEBPs[2] = inverseEBP(switchEBP(EBP));
+	symmetricEBPs[0] = inverseEBP(EBP, M);
+	symmetricEBPs[1] = switchEBP(EBP, N);
+	symmetricEBPs[2] = inverseEBP(switchEBP(EBP, N), M);
 
 	for (int i = 0; i < 3; i++)
 	{
@@ -25,7 +25,62 @@ bool checkIfDistinct(vector<vector<int>> EBP)
 	return checkedResult;
 }
 
-vector<vector<int>> inverseEBP(vector<vector<int>> EBP)
+bool checkIfDistinctHEBP(vector<vector<int>> VEBP, vector<vector<int>> HEBP)
+{
+	bool checkedResult = true;
+	vector<vector<vector<int>>> symmetricVEBPs(3);
+	vector<vector<vector<int>>> symmetricHEBPs(3);
+
+	symmetricVEBPs[0] = inverseEBP(VEBP, M);
+	symmetricVEBPs[1] = switchEBP(VEBP, N);
+	symmetricVEBPs[2] = inverseEBP(switchEBP(VEBP, N), M);
+
+	symmetricHEBPs[0] = switchEBP(HEBP, M);
+	symmetricHEBPs[1] = inverseEBP(HEBP, N);
+	symmetricHEBPs[2] = inverseEBP(switchEBP(HEBP,M), N);
+
+	for (int i = 0; i < 3; i++)
+	{
+		if (EqualEBP(VEBP, LargerEBP(VEBP, symmetricVEBPs[i])))
+			continue;
+		else
+		{
+			if (EqualEBP(HEBP, LargerEBP(HEBP, symmetricHEBPs[i])))
+				continue;
+			else
+			{
+				checkedResult = false;
+				break;
+			}
+		}
+	}
+
+	return checkedResult;
+}
+
+bool checkRotationalSymmetryOfHEBP(vector<vector<int>> VEBP, vector<vector<int>> HEBP)
+{
+	bool checkedResult = true;
+	vector<vector<vector<int>>> symmetricHEBPs(3);
+	symmetricHEBPs[0] = switchEBP(rotateHEBP(HEBP), N);
+	symmetricHEBPs[1] = inverseEBP(rotateHEBP(HEBP), M);
+	symmetricHEBPs[2] = inverseEBP(switchEBP(rotateHEBP(HEBP), N), M);
+
+	for (int i = 0; i < 3; i++)
+	{
+		if (EqualEBP(VEBP, LargerEBP(VEBP, symmetricHEBPs[i])))
+			continue;
+		else
+		{
+			checkedResult = false;
+			break;
+		}
+	}
+
+	return checkedResult;
+}
+
+vector<vector<int>> inverseEBP(vector<vector<int>> EBP, int numbBins)
 {
 	vector<vector<int>> inversedEBP;
 
@@ -34,7 +89,7 @@ vector<vector<int>> inverseEBP(vector<vector<int>> EBP)
 		vector<int> inversedSection;
 		for (vector<int>::iterator it2 = it->begin(); it2 != it->end(); it2++)
 		{
-			int inversedBinaryPosition = M - *it2 + 1;
+			int inversedBinaryPosition = numbBins - *it2 + 1;
 			inversedSection.push_back(inversedBinaryPosition);
 		}
 		inversedEBP.push_back(inversedSection);
@@ -42,15 +97,33 @@ vector<vector<int>> inverseEBP(vector<vector<int>> EBP)
 	return inversedEBP;
 }
 
-vector<vector<int>> switchEBP(vector<vector<int>> EBP)
+vector<vector<int>> switchEBP(vector<vector<int>> EBP, int numbSection)
 {
-	vector<vector<int>> switchedEBP(N - 1);
-	for (int i = 0; i < N - 1; i++)
+	vector<vector<int>> switchedEBP(numbSection - 1);
+	for (int i = 0; i < numbSection - 1; i++)
 	{
-		int switchedIndex = N - i - 2;
+		int switchedIndex = numbSection - i - 2;
 		switchedEBP[switchedIndex] = EBP[i];
 	}
 	return switchedEBP;
+}
+
+vector<vector<int>> rotateHEBP(vector<vector<int>> HEBP)
+{	
+	vector<vector<int>> rotatedHEBP = inverseEBP(HEBP, N);
+	return rotatedHEBP;
+}
+
+
+void writeEBP(vector<vector<int>> EBP, ofstream &myfile)
+{
+	for (vector<vector<int>>::iterator it = EBP.begin(); it != EBP.end(); ++it)
+	{
+		for (vector<int>::iterator it2 = it->begin(); it2 != it->end(); ++it2)
+			myfile << *it2;
+		myfile << " ";
+	}
+	myfile << endl;
 }
 
 void printEBP(vector<vector<int>> EBP)

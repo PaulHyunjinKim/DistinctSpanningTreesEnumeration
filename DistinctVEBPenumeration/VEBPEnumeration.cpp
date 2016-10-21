@@ -4,7 +4,7 @@
 #include "EBPOperations.h"
 
 
-void VEBPEnumeartion()
+void VEBPEnumeartion(ofstream &myFile)
 {
 	int OneBitsNumber = 0;
 	int startNumberOfBitsInVEBP = ceilf((float)(M*N - 1) / 2);
@@ -16,37 +16,36 @@ void VEBPEnumeartion()
 	{
 		vector<int> result;
 		//send message to VEBPEnumeration...//
-		SetOneBitNumberOnEachSectionVEBP(OneBitsNumber, 0, result, 0);
+		SetOneBitNumberOnEachSectionVEBP(OneBitsNumber, 0, result, 0, myFile);
 	}
 
 }
 
-void SetOneBitNumberOnEachSectionVEBP(int LeftOneBitsNumber, int currentRow, vector<int> result, int LastOneBitsNumber)
+void SetOneBitNumberOnEachSectionVEBP(int LeftOneBitsNumber, int currentRow, vector<int> result, int LastOneBitsNumber, ofstream &myFile)
 {
 	currentRow += 1;
 	LeftOneBitsNumber -= LastOneBitsNumber;
 
 	if (currentRow > N - 1)
 	{
-		distinctVEBPEnumeration(result);
+		distinctVEBPEnumeration(result, myFile);
 	}
 	else
 	{
 		int MinNumber = max(1, LeftOneBitsNumber - M*(N - 1 - currentRow));
 		int MaxNumber = min(M, LeftOneBitsNumber - (N - 1 - currentRow));
-		
 		for (LastOneBitsNumber = MinNumber; LastOneBitsNumber <= MaxNumber; LastOneBitsNumber++)
 		{
 			result.push_back(LastOneBitsNumber);
-			SetOneBitNumberOnEachSectionVEBP(LeftOneBitsNumber, currentRow, result, LastOneBitsNumber);
+			SetOneBitNumberOnEachSectionVEBP(LeftOneBitsNumber, currentRow, result, LastOneBitsNumber, myFile);
 			result.pop_back();
 		}
 	}
 }
 
-void distinctVEBPEnumeration(vector<int> result)
+void distinctVEBPEnumeration(vector<int> result, ofstream &myFile)
 {
-	cout << "result " << endl;
+	//cout << "result " << endl;
 	
 	vector<vector<vector<int>>> VEBPSet;
 	///combinatorics based on #1bits in each section of VEBP///
@@ -55,21 +54,21 @@ void distinctVEBPEnumeration(vector<int> result)
 		int K = *it;
 		vector<int> resultForCombinations;
 		vector<vector<int>> VEBPi;
-		cout << K << " ";
+		//cout << K << " ";
 		allCombinationsOfKInN(1, K, M, resultForCombinations, VEBPi);
 		
 		VEBPSet.push_back(VEBPi);
 	}
-	cout << endl;
+	//cout << endl;
 	
 	vector<vector<int>> VEBP;
-	completeEachVEBP(0, VEBPSet, VEBP);
-	cout << endl;
+	completeEachVEBP(0, VEBPSet, VEBP, myFile);
+	//cout << endl;
 }
 
 
 
-void completeEachVEBP(int sectionNumber, vector<vector<vector<int>>> VEBPSet, vector<vector<int>> VEBP)
+void completeEachVEBP(int sectionNumber, vector<vector<vector<int>>> VEBPSet, vector<vector<int>> VEBP, ofstream &myFile)
 {
 	if (sectionNumber == N - 1)
 	{
@@ -78,7 +77,7 @@ void completeEachVEBP(int sectionNumber, vector<vector<vector<int>>> VEBPSet, ve
 		{
 			//printEBP(VEBP);
 			//send message to HEBP enumeration..//
-			HEBPEnumeration(VEBP);
+			HEBPEnumeration(VEBP, myFile);
 			//////////
 		}
 		
@@ -90,7 +89,7 @@ void completeEachVEBP(int sectionNumber, vector<vector<vector<int>>> VEBPSet, ve
 		{
 			VEBP.push_back(VEBPSet[sectionNumber][i]);
 			
-			completeEachVEBP(sectionNumber + 1, VEBPSet, VEBP);
+			completeEachVEBP(sectionNumber + 1, VEBPSet, VEBP, myFile);
 
 			VEBP.pop_back();
 		}
