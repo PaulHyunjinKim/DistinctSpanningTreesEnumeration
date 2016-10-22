@@ -121,14 +121,23 @@ void generateHEBPi(int VENumb, int HENumb, int HENumbi, int leftHENumbi, int ind
 {
 	if (indexInMapKey > HEBPiTree.size()-1)
 	{
-		//cout << "hebp"<<currentColumn<<": " << endl;
-		//printEBPi(HEBPi);
+		/*cout << "hebp"<<currentColumn<<": " << endl;
+		printEBPi(HEBPi);*/
 
 		//vector<int>::iterator minValue = min_element(CCNumbMatrix[currentColumn + 1].begin() + 1, CCNumbMatrix[currentColumn + 1].end());
-		newCCNumb_iplus1(currentColumn, CCNumbMatrix, HEBPi);
+		bool isError = newCCNumb_iplus1(currentColumn, CCNumbMatrix, HEBPi);
+
 		HENumb -= HENumbi;
 		HEBP.push_back(HEBPi);
 		
+		if (isError)
+		{
+			printEBP(VEBP);
+			printEBP(HEBP);
+			cout << "HENumb: " << HENumb << endl;
+			printHEBPiTree(HEBPiTree);
+			printEBP(CCNumbMatrix);
+		}
 		distinctHEBPEnumeartion(currentColumn + 1, CCNumbMatrix, HENumb, VENumb, HEBP, VEBP, myFile);
 		//HEBP.pop_back();
 		//end
@@ -178,16 +187,17 @@ void generateHEBPi(int VENumb, int HENumb, int HENumbi, int leftHENumbi, int ind
 	}
 }
 
-void newCCNumb_iplus1(int currentColumn, vector<vector<int>> &CCNumbMatrix,  vector<int> HEBPi)
+bool newCCNumb_iplus1(int currentColumn, vector<vector<int>> &CCNumbMatrix,  vector<int> HEBPi)
 {
+	bool error = false;
 	map<int, vector<int>> CCNumbTree;
 	map<int, vector<int>>::iterator it1;
 	map<int, vector<int>>::iterator it2;
 	initCCNumbTree(CCNumbTree, CCNumbMatrix, currentColumn);
 
-	//printEBP(CCNumbMatrix);
+	/*printEBP(CCNumbMatrix);
 
-	/*for (map<int, vector<int>>::iterator it = CCNumbTree.begin(); it != CCNumbTree.end(); it++)
+	for (map<int, vector<int>>::iterator it = CCNumbTree.begin(); it != CCNumbTree.end(); it++)
 	{
 		cout << it->first << " --> ";
 		for (vector<int>::iterator it2 = it->second.begin(); it2 != it->second.end(); it2++)
@@ -201,7 +211,9 @@ void newCCNumb_iplus1(int currentColumn, vector<vector<int>> &CCNumbMatrix,  vec
 	{
 		it1 = CCNumbTree.find(CCNumbMatrix[currentColumn][*edgeIndex]);
 		it2 = CCNumbTree.find(CCNumbMatrix[currentColumn+1][*edgeIndex]);
-		//cout << "it1 "<< CCNumbMatrix[currentColumn][*edgeIndex]<<" it2 "<< CCNumbMatrix[currentColumn + 1][*edgeIndex] << endl;
+		/*if(it2 == CCNumbTree.end())
+			cout << "it1 "<< CCNumbMatrix[currentColumn][*edgeIndex]<<" it2 "<< CCNumbMatrix[currentColumn + 1][*edgeIndex] << endl;*/
+
 		if (CCNumbMatrix[currentColumn][*edgeIndex] < CCNumbMatrix[currentColumn + 1][*edgeIndex])
 		{
 			
@@ -209,14 +221,25 @@ void newCCNumb_iplus1(int currentColumn, vector<vector<int>> &CCNumbMatrix,  vec
 			{
 				it1->second.push_back(*iterator);
 				//int indexInCCNumb = *iterator - N;
-				int indexInCCNumb = *iterator;
-				if(*iterator>N)
+				int indexInCCNumb = 0;
+				int column = 0;
+				if (*iterator > N)//currentColumn+1
+				{
+					column = currentColumn + 1;
 					indexInCCNumb = *iterator - N;
+				}
+					
+				else//currentColumn
+				{
+					column = currentColumn;
+					indexInCCNumb = *iterator;
+				}
 				
-				CCNumbMatrix[currentColumn + 1][indexInCCNumb] = it1->first;
+				CCNumbMatrix[column][indexInCCNumb] = it1->first;
 			}
 			CCNumbTree.erase(it2);
 		}
+
 		else if (CCNumbMatrix[currentColumn][*edgeIndex] > CCNumbMatrix[currentColumn + 1][*edgeIndex])
 		{
 			
@@ -224,18 +247,31 @@ void newCCNumb_iplus1(int currentColumn, vector<vector<int>> &CCNumbMatrix,  vec
 			{
 				it2->second.push_back(*iterator);
 				//int indexInCCnumb = *iterator;
-				int indexInCCNumb = *iterator;
-				if (*iterator>N)
+				int indexInCCNumb = 0;
+				int column = 0;
+				if (*iterator > N)//currentColumn+1
+				{
+					column = currentColumn + 1;
 					indexInCCNumb = *iterator - N;
-				
-				CCNumbMatrix[currentColumn][indexInCCNumb] = it2->first;
+				}
+
+				else//currentColumn
+				{
+					column = currentColumn;
+					indexInCCNumb = *iterator;
+				}
+				CCNumbMatrix[column][indexInCCNumb] = it2->first;
 			}
 			CCNumbTree.erase(it1);
 		}
 		else
+		{
 			cout << "ERROR!!!!! loop is appeared!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" << endl;
+			error = true;
+		}
+			
 	}
-
+	return error;
 	
 }
 

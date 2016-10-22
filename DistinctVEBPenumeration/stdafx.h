@@ -18,7 +18,7 @@
 using namespace std;
 
 #define M 4 //#columns
-#define N 4  //#rows
+#define N 3  //#rows
 
 
 // TODO: reference additional headers your program requires here
