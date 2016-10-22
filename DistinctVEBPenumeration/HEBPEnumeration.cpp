@@ -17,13 +17,22 @@ void HEBPEnumeration(vector<vector<int>> VEBP, ofstream &myFile)
 	vector<int> minHEi(M-1,0);
 	maxMinHeiFromVEBPPrime(VEBPPrime, maxHEi, minHEi);
 	
+	int leftMaxHEi = 0;
+	int leftMinHEi = 0;
+	for (int i = 1; i < M - 1; i++)
+	{
+		leftMaxHEi += maxHEi[i];
+		leftMinHEi += minHEi[i];
+	}
+
+
 	HENumb = M*N - 1 - VENumb;
 
 	vector<vector<int>> CCNumbMatrix(M, vector<int>(N + 1, 0));
 	CCNumbMatFromVEBPPrime(CCNumbMatrix, VEBPPrime);
 	
 	vector<vector<int>> HEBP;
-	distinctHEBPEnumeartion(0, CCNumbMatrix, maxHEi, minHEi, HENumb, VENumb, HEBP, VEBP, myFile);
+	distinctHEBPEnumeartion(0, CCNumbMatrix, maxHEi, minHEi, leftMaxHEi, leftMinHEi, HENumb, VENumb, HEBP, VEBP, myFile);
 	//getchar();
 }
 
@@ -83,7 +92,7 @@ void VEBPPrimeAndVENumbFromVEBP(vector<vector<int>> VEBP, vector<vector<int>> &V
 }
 
 
-void distinctHEBPEnumeartion(int currentColumn, vector<vector<int>> CCNumbMatrix, vector<int> maxHEi, vector<int> minHEi, int HENumb, int VENumb, vector<vector<int>> HEBP, vector<vector<int>> VEBP, ofstream &myFile)//enumerate all distinct HEBP based on VEBP
+void distinctHEBPEnumeartion(int currentColumn, vector<vector<int>> CCNumbMatrix, vector<int> maxHEi, vector<int> minHEi, int leftMaxHEi, int leftMinHEi, int HENumb, int VENumb, vector<vector<int>> HEBP, vector<vector<int>> VEBP, ofstream &myFile)//enumerate all distinct HEBP based on VEBP
 {
 	
 	if (currentColumn > M - 2)
@@ -127,13 +136,13 @@ void distinctHEBPEnumeartion(int currentColumn, vector<vector<int>> CCNumbMatrix
 		for (map<int, vector<vector<int>>>::iterator it = HEBPiTree.begin(); it != HEBPiTree.end(); it++)
 			size2Numb += it->second.size();
 		
-		int leftMaxHEi = 0;
+		/*int leftMaxHEi = 0;
 		int leftMinHEi = 0;
 		for (int i = currentColumn + 1; i < M - 1; i++)
 		{
 			leftMaxHEi += maxHEi[i];
 			leftMinHEi += minHEi[i];
-		}
+		}*/
 
 
 		/*int MinNumber = max(size1Numb, HENumb - N*(M - 1 - (currentColumn + 1)));
@@ -141,18 +150,18 @@ void distinctHEBPEnumeartion(int currentColumn, vector<vector<int>> CCNumbMatrix
 
 		int MinNumber = max(size1Numb, HENumb - leftMaxHEi);
 		int MaxNumber = min(size2Numb, HENumb - leftMinHEi);
-
+		
 		for (int HENumbi = MinNumber; HENumbi <= MaxNumber; HENumbi++)
 		{
 			vector<int> HEBPi;
-			generateHEBPi(maxHEi, minHEi, VENumb, HENumb, HENumbi, HENumbi, 0, currentColumn, CCNumbMatrix, size1Numb, size2Numb, HEBPiTree, HEBPi, HEBP, VEBP, myFile);
+			generateHEBPi(maxHEi, minHEi, leftMaxHEi, leftMinHEi, VENumb, HENumb, HENumbi, HENumbi,  0, currentColumn, CCNumbMatrix, size1Numb, size2Numb, HEBPiTree, HEBPi, HEBP, VEBP, myFile);
 		}
 		
 	}
 }
 
 
-void generateHEBPi(vector<int> maxHEi, vector<int> minHEi, int VENumb, int HENumb, int HENumbi, int leftHENumbi, int indexInMapKey, int currentColumn, vector<vector<int>> CCNumbMatrix, int size1Numb, int size2Numb, map<int, vector<vector<int>>> HEBPiTree, vector<int> HEBPi, vector<vector<int>> HEBP, vector<vector<int>> VEBP, ofstream &myFile)
+void generateHEBPi(vector<int> maxHEi, vector<int> minHEi, int leftMaxHEi, int leftMinHEi, int VENumb, int HENumb, int HENumbi, int leftHENumbi, int indexInMapKey, int currentColumn, vector<vector<int>> CCNumbMatrix, int size1Numb, int size2Numb, map<int, vector<vector<int>>> HEBPiTree, vector<int> HEBPi, vector<vector<int>> HEBP, vector<vector<int>> VEBP, ofstream &myFile)
 {
 	if (indexInMapKey > HEBPiTree.size()-1)
 	{
@@ -163,6 +172,11 @@ void generateHEBPi(vector<int> maxHEi, vector<int> minHEi, int VENumb, int HENum
 		bool isError = newCCNumb_iplus1(currentColumn, CCNumbMatrix, HEBPi);
 
 		HENumb -= HENumbi;
+		if (currentColumn < M - 2)
+		{
+			leftMaxHEi -= maxHEi[currentColumn + 1];
+			leftMinHEi -= minHEi[currentColumn + 1];
+		}
 		HEBP.push_back(HEBPi);
 		
 		if (isError)
@@ -173,7 +187,7 @@ void generateHEBPi(vector<int> maxHEi, vector<int> minHEi, int VENumb, int HENum
 			printHEBPiTree(HEBPiTree);
 			printEBP(CCNumbMatrix);
 		}
-		distinctHEBPEnumeartion(currentColumn + 1, CCNumbMatrix, maxHEi, minHEi, HENumb, VENumb, HEBP, VEBP, myFile);
+		distinctHEBPEnumeartion(currentColumn + 1, CCNumbMatrix, maxHEi, minHEi, leftMaxHEi, leftMinHEi, HENumb, VENumb, HEBP, VEBP, myFile);
 		//HEBP.pop_back();
 		//end
 	}
@@ -211,7 +225,7 @@ void generateHEBPi(vector<int> maxHEi, vector<int> minHEi, int VENumb, int HENum
 					{
 						HEBPi.push_back(*it);
 					}
-					generateHEBPi(maxHEi, minHEi, VENumb, HENumb, HENumbi, leftHENumbi, indexInMapKey + 1, currentColumn, CCNumbMatrix, size1Numb, size2Numb, HEBPiTree, HEBPi, HEBP, VEBP, myFile);
+					generateHEBPi(maxHEi, minHEi, leftMaxHEi, leftMinHEi, VENumb, HENumb, HENumbi,  leftHENumbi, indexInMapKey + 1, currentColumn, CCNumbMatrix, size1Numb, size2Numb, HEBPiTree, HEBPi, HEBP, VEBP, myFile);
 					for (vector<int>::iterator it = eachCombInSet->begin(); it != eachCombInSet->end(); it++)
 					{
 						HEBPi.pop_back();
