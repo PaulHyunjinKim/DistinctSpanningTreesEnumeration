@@ -10,3 +10,4 @@ void combinationOneBitForEachCCinHEBPTree(vector<vector<int>> treeInEachCC, int 
 void CCNumbMatFromVEBPPrime(vector<vector<int>> &CCNumbMatrix, vector<vector<int>> VEBPPrime);
 bool newCCNumb_iplus1(int currentColumn, vector<vector<int>> &CCNumbMatrix, vector<int> HEBPi);
 void initCCNumbTree(map<int, vector<int>> &CCNumbTree, vector<vector<int>> CCNumbMatrix, int currentColumn);
+void maxMinHeiFromVEBPPrime(vector<vector<int>> VEBPPrime, vector<int> &maxHEi, vector<int> &minHEi);

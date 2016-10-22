@@ -12,6 +12,10 @@ void HEBPEnumeration(vector<vector<int>> VEBP, ofstream &myFile)
 	int HENumb = 0;
 	vector<vector<int>> VEBPPrime(M, vector<int>(N, 0));
 	VEBPPrimeAndVENumbFromVEBP(VEBP, VEBPPrime, VENumb);
+	vector<int> maxHEi(M-1,0);
+	vector<int> minHEi(M-1,0);
+	maxMinHeiFromVEBPPrime(VEBPPrime, maxHEi, minHEi);
+	
 	HENumb = M*N - 1 - VENumb;
 
 	vector<vector<int>> CCNumbMatrix(M, vector<int>(N + 1, 0));
@@ -22,6 +26,26 @@ void HEBPEnumeration(vector<vector<int>> VEBP, ofstream &myFile)
 	vector<vector<int>> HEBP;
 	distinctHEBPEnumeartion(0, CCNumbMatrix, HENumb, VENumb, HEBP, VEBP, myFile);
 	//getchar();
+}
+
+void maxMinHeiFromVEBPPrime(vector<vector<int>> VEBPPrime, vector<int> &maxHEi, vector<int> &minHEi)
+{
+	for (int i = 1; i < M-1; i++)
+	{
+		int maxNumb = N;
+		int minNumb = N;
+		for (int j = 1; j < N; j++)
+		{
+			if (VEBPPrime[i + 1][j] == 1)
+			{
+				minNumb -= 1;
+				if (VEBPPrime[i][j] == 1)
+					maxNumb -= 1;
+			}
+		}
+		maxHEi[i] = maxNumb;
+		minHEi[i] = minNumb;
+	}
 }
 
 void CCNumbMatFromVEBPPrime(vector<vector<int>> &CCNumbMatrix, vector<vector<int>> VEBPPrime)
