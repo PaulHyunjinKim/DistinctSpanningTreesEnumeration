@@ -8,6 +8,7 @@ vector<vector<int>> switchEBP(vector<vector<int>> EBP, int numbSection);
 vector<vector<int>> LargerEBP(vector<vector<int>> EBP1, vector<vector<int>> EBP2);
 vector<vector<int>> SmallerEBP(vector<vector<int>> EBP1, vector<vector<int>> EBP2);
 vector<vector<int>> rotateHEBP(vector<vector<int>> HEBP);
+vector<vector<int>> rotateVEBP(vector<vector<int>> VEBP);
 void writeEBP(vector<vector<int>> EBP, ofstream &myfile);
 void printEBP(vector<vector<int>> EBP);
 void printEBPi(vector<int> EBPi);

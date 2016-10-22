@@ -3,7 +3,6 @@
 #include "HEBPEnumeration.h"
 #include "EBPOperations.h"
 
-
 void VEBPEnumeartion(ofstream &myFile)
 {
 	int OneBitsNumber = 0;

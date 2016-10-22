@@ -2,7 +2,7 @@
 #include "HEBPEnumeration.h"
 #include "EBPOperations.h"
 
-
+int ii = 0;
 void HEBPEnumeration(vector<vector<int>> VEBP, ofstream &myFile)
 {
 	//recieve message from VEBP enumeration
@@ -106,22 +106,21 @@ void distinctHEBPEnumeartion(int currentColumn, vector<vector<int>> CCNumbMatrix
 		//cout << "VEBP: "; printEBP(VEBP);
 		
 		bool HEBPIsDistinct = true;
-		bool checkMirroredSymmetry = checkIfDistinctHEBP(VEBP, HEBP);
-		
-		if((M == N) && (M / 2 == 1)  && (VENumb == (M*N - 1) / 2) && checkMirroredSymmetry)
+		HEBPIsDistinct = checkIfDistinctHEBP(VEBP, HEBP);
+		//cout << "mirroredHEBPIsDistinct " << HEBPIsDistinct << endl;
+		if((M == N) && (M / 2 == 1)  && (VENumb == (M*N - 1) / 2) && HEBPIsDistinct)
 		{
-			//cout << "check rotational" << endl;
-			//check rotational symmetry
 			HEBPIsDistinct = checkRotationalSymmetryOfHEBP(VEBP, HEBP);
 		}
-
+		/*cout << "beforeVEBP: "; printEBP(VEBP);
+		cout << "beforeHEBP: "; printEBP(HEBP);
+		cout << "rotateHEBPIsDistinct " << HEBPIsDistinct << endl;*/
 		if (HEBPIsDistinct)
 		{
+			/*ii++;
+			cout << ii << endl;*/
 			writeEBP(VEBP, myFile);
 			writeEBP(HEBP, myFile);
-			cout << M << endl;
-			cout << N << endl;
-			getchar();
 			/*cout << "VEBP: "; printEBP(VEBP);
 			cout << "HEBP: "; printEBP(HEBP);*/
 		}

@@ -16,9 +16,8 @@
 #include <map>
 
 using namespace std;
-
-#define M 3 //#columns
-#define N 3  //#rows
+#define M 5 //#columns
+#define N 5  //#rows
 
 
 // TODO: reference additional headers your program requires here

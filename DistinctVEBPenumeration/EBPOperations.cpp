@@ -41,9 +41,7 @@ bool checkIfDistinctHEBP(vector<vector<int>> VEBP, vector<vector<int>> HEBP)
 
 	for (int i = 0; i < 3; i++)
 	{
-		if (EqualEBP(VEBP, LargerEBP(VEBP, symmetricVEBPs[i])))
-			continue;
-		else
+		if (EqualEBP(VEBP, symmetricVEBPs[i]))
 		{
 			if (EqualEBP(HEBP, LargerEBP(HEBP, symmetricHEBPs[i])))
 				continue;
@@ -61,15 +59,33 @@ bool checkIfDistinctHEBP(vector<vector<int>> VEBP, vector<vector<int>> HEBP)
 bool checkRotationalSymmetryOfHEBP(vector<vector<int>> VEBP, vector<vector<int>> HEBP)
 {
 	bool checkedResult = true;
-	vector<vector<vector<int>>> symmetricHEBPs(3);
+	vector<vector<vector<int>>> symmetricHEBPs(4);
+	vector<vector<vector<int>>> symmetricVEBPs(4);
 	symmetricHEBPs[0] = switchEBP(rotateHEBP(HEBP), N);
 	symmetricHEBPs[1] = inverseEBP(rotateHEBP(HEBP), M);
 	symmetricHEBPs[2] = inverseEBP(switchEBP(rotateHEBP(HEBP), N), M);
+	symmetricHEBPs[3] = rotateHEBP(HEBP);
 
-	for (int i = 0; i < 3; i++)
+	symmetricVEBPs[0] = switchEBP(rotateVEBP(VEBP), M);
+	symmetricVEBPs[1] = inverseEBP(rotateVEBP(VEBP), N);
+	symmetricVEBPs[2] = inverseEBP(switchEBP(rotateVEBP(VEBP), M), N);
+	symmetricVEBPs[3] = rotateVEBP(VEBP);
+
+	for (int i = 0; i < 4; i++)
 	{
 		if (EqualEBP(VEBP, LargerEBP(VEBP, symmetricHEBPs[i])))
-			continue;
+		{
+			if (EqualEBP(VEBP, symmetricHEBPs[i]))
+			{
+				if (EqualEBP(HEBP, LargerEBP(HEBP, symmetricVEBPs[i])))
+					continue;
+				else
+				{
+					checkedResult = false;
+					break;
+				}
+			}
+		}
 		else
 		{
 			checkedResult = false;
@@ -111,6 +127,12 @@ vector<vector<int>> switchEBP(vector<vector<int>> EBP, int numbSection)
 vector<vector<int>> rotateHEBP(vector<vector<int>> HEBP)
 {	
 	vector<vector<int>> rotatedHEBP = inverseEBP(HEBP, N);
+	return rotatedHEBP;
+}
+
+vector<vector<int>> rotateVEBP(vector<vector<int>> VEBP)
+{
+	vector<vector<int>> rotatedHEBP = inverseEBP(VEBP, M);
 	return rotatedHEBP;
 }
 
