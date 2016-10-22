@@ -119,6 +119,9 @@ void distinctHEBPEnumeartion(int currentColumn, vector<vector<int>> CCNumbMatrix
 		{
 			writeEBP(VEBP, myFile);
 			writeEBP(HEBP, myFile);
+			cout << M << endl;
+			cout << N << endl;
+			getchar();
 			/*cout << "VEBP: "; printEBP(VEBP);
 			cout << "HEBP: "; printEBP(HEBP);*/
 		}
