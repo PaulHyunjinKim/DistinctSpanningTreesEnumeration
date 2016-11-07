@@ -2,7 +2,7 @@
 #include "HEBPEnumeration.h"
 #include "EBPOperations.h"
 
-int ii = 0;
+//int ii = 0;
 void HEBPEnumeration(vector<vector<int>> VEBP, ofstream &myFile)
 {
 	//recieve message from VEBP enumeration
@@ -108,7 +108,7 @@ void distinctHEBPEnumeartion(int currentColumn, vector<vector<int>> CCNumbMatrix
 		bool HEBPIsDistinct = true;
 		HEBPIsDistinct = checkIfDistinctHEBP(VEBP, HEBP);
 		//cout << "mirroredHEBPIsDistinct " << HEBPIsDistinct << endl;
-		if((M == N) && (M / 2 == 1)  && (VENumb == (M*N - 1) / 2) && HEBPIsDistinct)
+		if((M == N) && (M % 2 == 1)  && (VENumb == (M*N - 1) / 2) && HEBPIsDistinct)
 		{
 			HEBPIsDistinct = checkRotationalSymmetryOfHEBP(VEBP, HEBP);
 		}
@@ -189,7 +189,8 @@ void generateHEBPi(vector<int> maxHEi, vector<int> minHEi, int leftMaxHEi, int l
 			printHEBPiTree(HEBPiTree);
 			printEBP(CCNumbMatrix);
 		}
-		distinctHEBPEnumeartion(currentColumn + 1, CCNumbMatrix, maxHEi, minHEi, leftMaxHEi, leftMinHEi, HENumb, VENumb, HEBP, VEBP, myFile);
+		else
+			distinctHEBPEnumeartion(currentColumn + 1, CCNumbMatrix, maxHEi, minHEi, leftMaxHEi, leftMinHEi, HENumb, VENumb, HEBP, VEBP, myFile);
 		//HEBP.pop_back();
 		//end
 	}

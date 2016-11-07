@@ -8,8 +8,8 @@ bool checkIfDistinct(vector<vector<int>> EBP)
 	vector<vector<vector<int>>> symmetricEBPs(3);
 
 	symmetricEBPs[0] = inverseEBP(EBP, M);
-	symmetricEBPs[1] = switchEBP(EBP, N);
-	symmetricEBPs[2] = inverseEBP(switchEBP(EBP, N), M);
+	symmetricEBPs[1] = inverseEBP(switchEBP(EBP, N), M);
+	symmetricEBPs[2] = switchEBP(EBP, N);
 
 	for (int i = 0; i < 3; i++)
 	{
@@ -158,6 +158,7 @@ void printEBP(vector<vector<int>> EBP)
 	}
 	cout << endl;
 }
+
 
 void printEBPi(vector<int> EBPi)
 {
