@@ -78,7 +78,6 @@ void distinctVEBPEnumeration(vector<int> result, ofstream &myFile, double &numbe
 		int K = *it;
 		vector<int> resultForCombinations;
 		vector<vector<int>> VEBPi;
-		//cout << K << " ";
 		//myFile << K << " ";
 		allCombinationsOfKInN(1, K, M, resultForCombinations, VEBPi);
 		
@@ -100,7 +99,7 @@ void completeEachVEBP(int sectionNumber, vector<vector<vector<int>>> VEBPSet, ve
 	{
 		if (!equalSwitch)
 		{
-			if (EqualEBP(VEBP, LargerEBP(VEBP, inverseEBP(VEBP, M))))
+			if (EqualEBP(VEBP, LargerEBP(VEBP, inverseEBP(VEBP, M),N),N))
 			{
 				//myFile << numberOfOutputs << endl;
 				//numberOfOutputs++;

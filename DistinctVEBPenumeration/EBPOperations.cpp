@@ -13,7 +13,7 @@ bool checkIfDistinct(vector<vector<int>> EBP)
 
 	for (int i = 0; i < 3; i++)
 	{
-		if (EqualEBP(EBP, LargerEBP(EBP, symmetricEBPs[i])))
+		if (EqualEBP(EBP, LargerEBP(EBP, symmetricEBPs[i],N),N))
 			continue;
 		else
 		{
@@ -41,9 +41,9 @@ bool checkIfDistinctHEBP(vector<vector<int>> VEBP, vector<vector<int>> HEBP)
 
 	for (int i = 0; i < 3; i++)
 	{
-		if (EqualEBP(VEBP, symmetricVEBPs[i]))
+		if (EqualEBP(VEBP, symmetricVEBPs[i],N))
 		{
-			if (EqualEBP(HEBP, LargerEBP(HEBP, symmetricHEBPs[i])))
+			if (EqualEBP(HEBP, LargerEBP(HEBP, symmetricHEBPs[i],M),M))
 				continue;
 			else
 			{
@@ -73,11 +73,11 @@ bool checkRotationalSymmetryOfHEBP(vector<vector<int>> VEBP, vector<vector<int>>
 
 	for (int i = 0; i < 4; i++)
 	{
-		if (EqualEBP(VEBP, LargerEBP(VEBP, symmetricHEBPs[i])))
+		if (EqualEBP(VEBP, LargerEBP(VEBP, symmetricHEBPs[i],N),N))
 		{
-			if (EqualEBP(VEBP, symmetricHEBPs[i]))
+			if (EqualEBP(VEBP, symmetricHEBPs[i],N))
 			{
-				if (EqualEBP(HEBP, LargerEBP(HEBP, symmetricVEBPs[i])))
+				if (EqualEBP(HEBP, LargerEBP(HEBP, symmetricVEBPs[i], M),M))
 					continue;
 				else
 				{
@@ -182,7 +182,7 @@ void allCombinationsOfKInN(int startIndex, int leftElements, int n, vector<int> 
 	}
 }
 
-vector<vector<int>> LargerEBP(vector<vector<int>> EBP1, vector<vector<int>> EBP2)
+vector<vector<int>> LargerEBP(vector<vector<int>> EBP1, vector<vector<int>> EBP2, int numbSection)
 {
 	vector<vector<int>> maxEBP;
 	maxEBP = EBP1;
@@ -205,7 +205,7 @@ vector<vector<int>> LargerEBP(vector<vector<int>> EBP1, vector<vector<int>> EBP2
 		EBP2Integers.push_back(integer);
 	}
 
-	for (int i = 0; i < N - 1; i++)
+	for (int i = 0; i <numbSection - 1; i++)
 	{
 		if (EBP1Integers[i] < EBP2Integers[i])
 		{
@@ -223,7 +223,7 @@ vector<vector<int>> LargerEBP(vector<vector<int>> EBP1, vector<vector<int>> EBP2
 	return maxEBP;
 }
 
-vector<vector<int>> SmallerEBP(vector<vector<int>> EBP1, vector<vector<int>> EBP2)
+vector<vector<int>> SmallerEBP(vector<vector<int>> EBP1, vector<vector<int>> EBP2, int numbSection)
 {
 	vector<vector<int>> minEBP;
 	minEBP = EBP1;
@@ -246,7 +246,7 @@ vector<vector<int>> SmallerEBP(vector<vector<int>> EBP1, vector<vector<int>> EBP
 		EBP2Integers.push_back(integer);
 	}
 
-	for (int i = 0; i < N - 1; i++)
+	for (int i = 0; i < numbSection - 1; i++)
 	{
 		if (EBP1Integers[i] > EBP2Integers[i])
 		{
@@ -263,7 +263,7 @@ vector<vector<int>> SmallerEBP(vector<vector<int>> EBP1, vector<vector<int>> EBP
 	return minEBP;
 }
 
-bool EqualEBP(vector<vector<int>> EBP1, vector<vector<int>> EBP2)
+bool EqualEBP(vector<vector<int>> EBP1, vector<vector<int>> EBP2, int numbSection)
 {
 	bool equalCheck = true;
 
@@ -286,7 +286,7 @@ bool EqualEBP(vector<vector<int>> EBP1, vector<vector<int>> EBP2)
 		EBP2Integers.push_back(integer);
 	}
 
-	for (int i = 0; i < N - 1; i++)
+	for (int i = 0; i < numbSection - 1; i++)
 	{
 		if (EBP1Integers[i] == EBP2Integers[i])
 			continue;
