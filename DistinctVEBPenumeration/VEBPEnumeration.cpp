@@ -2,6 +2,7 @@
 #include "VEBPEnumeration.h"
 #include "HEBPEnumeration.h"
 #include "EBPOperations.h"
+#include <ctime>
 
 void VEBPEnumeartion(ofstream &myFile, double &numberOfOutputs)
 {
@@ -9,6 +10,14 @@ void VEBPEnumeartion(ofstream &myFile, double &numberOfOutputs)
 	int startNumberOfBitsInVEBP = ceilf((float)(M*N - 1) / 2);
 	if (M != N)
 		startNumberOfBitsInVEBP = N - 1;
+	
+	map<int, vector<vector<int>>> VEBPiMap;
+	//vector<vector<vector<int>>> VEBPiMap;
+	
+	
+	ifstream readFile;
+	readFile.open("VEBPi_5.bin", ios::in | ios::binary);
+	VEBPiMap = mapFromBinaryFile(readFile);
 
 
 	for (OneBitsNumber = startNumberOfBitsInVEBP; OneBitsNumber <= N*N - N; OneBitsNumber++)//enumerate VEBP based on # 1bits on VEBP
@@ -17,12 +26,70 @@ void VEBPEnumeartion(ofstream &myFile, double &numberOfOutputs)
 		vector<int> result;
 		//send message to VEBPEnumeration...//
 		//myFile << "OneBitsNumber: "<< OneBitsNumber << endl;
-		SetOneBitNumberOnEachSectionVEBP(OneBitsNumber, 0, result, 0, myFile, numberOfOutputs);
-		
+		SetOneBitNumberOnEachSectionVEBP(OneBitsNumber, 0, result, 0, myFile, numberOfOutputs, VEBPiMap);
 	}
 }
 
-void SetOneBitNumberOnEachSectionVEBP(int LeftOneBitsNumber, int currentRow, vector<int> result, int LastOneBitsNumber, ofstream &myFile, double &numberOfOutputs)
+map<int, vector<vector<int>>> mapFromBinaryFile(ifstream &readFile)
+{
+	map<int, vector<vector<int>>> VEBPiMap;
+	readFile.seekg(0, ios::end);
+	int length = readFile.tellg();
+	readFile.seekg(0, ios::beg);
+	//cout << "length"<<length << endl;
+	int readSize = 0;
+	vector<int> temp;
+	while (length != readFile.tellg())
+	{
+		readFile.read(reinterpret_cast<char*>(&readSize), sizeof(int));
+		temp.resize(readSize);
+		readFile.read(reinterpret_cast<char*>(temp.data()), readSize * sizeof(int));
+
+		if (VEBPiMap.end() == VEBPiMap.find(readSize))
+		{
+
+			vector<vector<int>> VEBPiSet;
+			VEBPiSet.push_back(temp);
+			VEBPiMap.insert(pair<int, vector<vector<int>>>(readSize, VEBPiSet));
+		}
+		else
+		{
+			VEBPiMap[readSize].push_back(temp);
+		}
+	}
+	readFile.close();
+
+	return VEBPiMap;
+}
+
+vector<vector<vector<int>>> vectorFromBinaryFile(ifstream &readFile)
+{
+	vector<vector<vector<int>>> VEBPiMap(M+1);
+	readFile.seekg(0, ios::end);
+	int length = readFile.tellg();
+	readFile.seekg(0, ios::beg);
+	//cout << "length"<<length << endl;
+	int readSize = 0;
+	vector<int> temp;
+	while (length != readFile.tellg())
+	{
+		readFile.read(reinterpret_cast<char*>(&readSize), sizeof(int));
+		temp.resize(readSize);
+		readFile.read(reinterpret_cast<char*>(temp.data()), readSize * sizeof(int));
+
+		//cout << readSize << endl;
+		//cout << VEBPiMap[readSize].size() << endl;
+		//if (VEBPiMap.end() == VEBPiMap.find(readSize))
+		VEBPiMap[readSize].push_back(temp);
+		//cout << readSize << endl;
+	}
+	readFile.close();
+
+	return VEBPiMap;
+}
+
+//void SetOneBitNumberOnEachSectionVEBP(int LeftOneBitsNumber, int currentRow, vector<int> result, int LastOneBitsNumber, ofstream &myFile, double &numberOfOutputs, map<int, vector<vector<int>>> VEBPiMap)
+void SetOneBitNumberOnEachSectionVEBP(int LeftOneBitsNumber, int currentRow, vector<int> &result, int LastOneBitsNumber, ofstream &myFile, double &numberOfOutputs, map<int, vector<vector<int>>> &VEBPiMap)
 {
 	currentRow += 1;
 	LeftOneBitsNumber -= LastOneBitsNumber;
@@ -30,8 +97,21 @@ void SetOneBitNumberOnEachSectionVEBP(int LeftOneBitsNumber, int currentRow, vec
 	if (currentRow > N - 1)
 	{
 		bool equalSwitch = true;
-		if(checkIFDistinctBitsComb(result, equalSwitch))
-			distinctVEBPEnumeration(result, myFile, numberOfOutputs, equalSwitch);
+		if (checkIFDistinctBitsComb(result, equalSwitch))
+		{
+
+			//clock_t begin = clock();
+			//distinctVEBPEnumeration(result, myFile, numberOfOutputs, equalSwitch);
+			
+			vector<vector<int>> VEBP;
+			distinctVEBPEnumeration(result, myFile, equalSwitch,VEBPiMap, 0, VEBP);
+
+			//clock_t begin = clock();
+			/*clock_t end = clock();
+			double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
+			cout << "elapsed time: " << elapsed_secs << endl;*/
+		}
+			
 	}
 	else
 	{
@@ -40,13 +120,13 @@ void SetOneBitNumberOnEachSectionVEBP(int LeftOneBitsNumber, int currentRow, vec
 		for (LastOneBitsNumber = MinNumber; LastOneBitsNumber <= MaxNumber; LastOneBitsNumber++)
 		{
 			result.push_back(LastOneBitsNumber);
-			SetOneBitNumberOnEachSectionVEBP(LeftOneBitsNumber, currentRow, result, LastOneBitsNumber, myFile, numberOfOutputs);
+			SetOneBitNumberOnEachSectionVEBP(LeftOneBitsNumber, currentRow, result, LastOneBitsNumber, myFile, numberOfOutputs, VEBPiMap);
 			result.pop_back();
 		}
 	}
 }
 
-bool checkIFDistinctBitsComb(vector<int> result, bool &equalSwitch)
+bool checkIFDistinctBitsComb(vector<int> &result, bool &equalSwitch)
 {
 	bool checkedResult = true;
 	
@@ -67,7 +147,7 @@ bool checkIFDistinctBitsComb(vector<int> result, bool &equalSwitch)
 	return checkedResult;
 }
 
-void distinctVEBPEnumeration(vector<int> result, ofstream &myFile, double &numberOfOutputs, bool equalSwitch)
+void distinctVEBPEnumeration(vector<int> &result, ofstream &myFile, double &numberOfOutputs, bool equalSwitch)
 {
 	//cout << "result " << endl;
 	//myFile << "result " << endl;
@@ -91,9 +171,59 @@ void distinctVEBPEnumeration(vector<int> result, ofstream &myFile, double &numbe
 	//myFile << endl;
 }
 
+//void distinctVEBPEnumeration(vector<int> result, ofstream &myFile, double &numberOfOutputs, bool equalSwitch, map<int, vector<vector<int>>> VEBPiMap, int numbSection, vector<vector<int>> VEBP, vector<int> VEBPi)
+//void distinctVEBPEnumeration(vector<int> &result, ofstream &myFile, bool equalSwitch, vector<vector<vector<int>>> &VEBPiMap, int numbSection, vector<vector<int>> &VEBP)
+void distinctVEBPEnumeration(vector<int> &result, ofstream &myFile, bool equalSwitch, map<int, vector<vector<int>>> &VEBPiMap, int numbSection, vector<vector<int>> &VEBP)
+{
+	//if(numbSection >=0 )VEBP.push_back(VEBPi);
+	//numbSection++;
+	
+	if (numbSection == N-1)
+	{
+		if (!equalSwitch)
+		{
+			if (EqualEBP(VEBP, LargerEBP(VEBP, inverseEBP(VEBP, M), N), N))
+			{
+				//myFile << numberOfOutputs << endl;
+				//numberOfOutputs++;
+				//printEBP(VEBP);
+				//writeEBP(VEBP, myFile);
+				//HEBPEnumeration(VEBP, myFile);
+			}
+		}
+		else
+		{
+			if (checkIfDistinct(VEBP))
+			{
+				//myFile << numberOfOutputs << endl;
+				//numberOfOutputs++;
+				//cout << "number of outputs from VEBP " << ii << endl;
+				//printEBP(VEBP);
+				//writeEBP(VEBP, myFile);
+				//send message to HEBP enumeration..//
+				//HEBPEnumeration(VEBP, myFile);
+				//////////
+			}
+		}
+	}
+	else
+	{
+		int mapIndex = result[numbSection];
+		//cout << "mapIndex " << mapIndex << endl;
+		
+		for (vector<vector<int>>::iterator it = VEBPiMap[mapIndex].begin(); it != VEBPiMap[mapIndex].end(); it++)
+		//for(int i=0; i<VEBPiMap[mapIndex].size(); i++)
+		{
 
+			//printEBPi(*it);
+			VEBP.push_back(*it);
+			distinctVEBPEnumeration(result, myFile, equalSwitch, VEBPiMap, numbSection + 1, VEBP);
+			VEBP.pop_back();
+		}
+	}
+}
 
-void completeEachVEBP(int sectionNumber, vector<vector<vector<int>>> VEBPSet, vector<vector<int>> VEBP, ofstream &myFile, double &numberOfOutputs, bool equalSwitch)
+void completeEachVEBP(int sectionNumber, vector<vector<vector<int>>> &VEBPSet, vector<vector<int>> &VEBP, ofstream &myFile, double &numberOfOutputs, bool equalSwitch)
 {
 	if (sectionNumber == N - 1)
 	{
@@ -103,8 +233,9 @@ void completeEachVEBP(int sectionNumber, vector<vector<vector<int>>> VEBPSet, ve
 			{
 				//myFile << numberOfOutputs << endl;
 				//numberOfOutputs++;
+				//printEBP(VEBP);
 				//writeEBP(VEBP, myFile);
-				HEBPEnumeration(VEBP, myFile);
+				//HEBPEnumeration(VEBP, myFile);
 			}		
 		}
 		else
@@ -117,19 +248,22 @@ void completeEachVEBP(int sectionNumber, vector<vector<vector<int>>> VEBPSet, ve
 				//printEBP(VEBP);
 				//writeEBP(VEBP, myFile);
 				//send message to HEBP enumeration..//
-				HEBPEnumeration(VEBP, myFile);
+				//HEBPEnumeration(VEBP, myFile);
 				//////////
 			}
 		}
 	}
 	else
 	{
-		for (int i = 0; i < VEBPSet[sectionNumber].size(); i++)
+		for (vector<vector<int>>::iterator it = VEBPSet[sectionNumber].begin(); it!= VEBPSet[sectionNumber].end();it++ )
 		{
-			VEBP.push_back(VEBPSet[sectionNumber][i]);
+
+			VEBP.push_back(*it);
+			
 			
 			completeEachVEBP(sectionNumber + 1, VEBPSet, VEBP, myFile, numberOfOutputs, equalSwitch);
-
+			
+			//getchar();
 			VEBP.pop_back();
 		}
 	}
