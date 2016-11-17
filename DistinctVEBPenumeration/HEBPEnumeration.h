@@ -2,7 +2,7 @@
 
 void HEBPEnumeration(vector<vector<int>> VEBP, ofstream &myFile, map<int, map<int, vector<vector<int>>>> &HEBPiMap);
 void distinctHEBPEnumeartion(int currentColumn, vector<vector<int>> CCNumbMatrix,vector<int> maxHEi, vector<int> minHEi, int leftMaxHEi, int leftMinHEi, int HENumb, int VENumb, vector<vector<int>> HEBP, vector<vector<int>> VEBP, ofstream &myFile);
-void distinctHEBPEnumeartion(int curCol, map<int, map<int, vector<vector<int>>>> &HEBPiMap, vector<int> &VEIntSet, int CCInt, vector<vector<int>> &VEBP, vector<vector<int>> &HEBP, int &VENumb);
+void distinctHEBPEnumeartion(ofstream &myFile, int curCol, map<int, map<int, vector<vector<int>>>> &HEBPiMap, vector<int> &VEIntSet, int CCInt, vector<vector<int>> &VEBP, vector<vector<int>> &HEBP, int &VENumb);
 map<int, vector<vector<int>>> generateTreeForHEBPi(vector<int> CCNumb, vector<int> VEBPPrime_iplus1);
 void VEBPPrimeAndVENumbFromVEBP(vector<vector<int>> &VEBP, vector<vector<int>> &VEBPPrime, int &VENumb);
 void VEIntSetfromVEBPPrime(vector<vector<int>> &VEBPPrime, vector<int> &VEIntSet);

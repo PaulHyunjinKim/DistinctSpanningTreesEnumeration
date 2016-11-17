@@ -26,37 +26,56 @@ void HEBPEnumeration(vector<vector<int>> VEBP, ofstream &myFile, map<int, map<in
 	InitCCInt = HEBPiMap[InitCCInt][VEIntSet[0]][0][1];
 	
 	vector<vector<int>> HEBP;
-	distinctHEBPEnumeartion(0, HEBPiMap, VEIntSet, InitCCInt, VEBP, HEBP, VENumb);
+	//distinctHEBPEnumeartion(myFile, 0, HEBPiMap, VEIntSet, InitCCInt, VEBP, HEBP, VENumb);
 
 	
-	//vector<int> maxHEi(M-1,0);
-	//vector<int> minHEi(M-1,0);
-	//maxMinHeiFromVEBPPrime(VEBPPrime, maxHEi, minHEi);
-	//
-	//int leftMaxHEi = 0;
-	//int leftMinHEi = 0;
-	//for (int i = 1; i < M - 1; i++)
-	//{
-	//	leftMaxHEi += maxHEi[i];
-	//	leftMinHEi += minHEi[i];
-	//}
+	vector<int> maxHEi(M-1,0);
+	vector<int> minHEi(M-1,0);
+	maxMinHeiFromVEBPPrime(VEBPPrime, maxHEi, minHEi);
+	
+	int leftMaxHEi = 0;
+	int leftMinHEi = 0;
+	for (int i = 1; i < M - 1; i++)
+	{
+		leftMaxHEi += maxHEi[i];
+		leftMinHEi += minHEi[i];
+	}
 
 
-	//HENumb = M*N - 1 - VENumb;
+	HENumb = M*N - 1 - VENumb;
 
-	//vector<vector<int>> CCNumbMatrix(M, vector<int>(N + 1, 0));
-	//CCNumbMatFromVEBPPrime(CCNumbMatrix, VEBPPrime);
-	//
-	////vector<vector<int>> HEBP;
-	//distinctHEBPEnumeartion(0, CCNumbMatrix, maxHEi, minHEi, leftMaxHEi, leftMinHEi, HENumb, VENumb, HEBP, VEBP, myFile);
-	cout << "correct: " << correctOne << " error: " << errorOne << endl;
+	vector<vector<int>> CCNumbMatrix(M, vector<int>(N + 1, 0));
+	CCNumbMatFromVEBPPrime(CCNumbMatrix, VEBPPrime);
+	
+	//vector<vector<int>> HEBP;
+	distinctHEBPEnumeartion(0, CCNumbMatrix, maxHEi, minHEi, leftMaxHEi, leftMinHEi, HENumb, VENumb, HEBP, VEBP, myFile);
+	//cout << "correct: " << correctOne << " error: " << errorOne << endl;
 	//getchar();
 }
 
-void distinctHEBPEnumeartion(int curCol, map<int, map<int, vector<vector<int>>>> &HEBPiMap, vector<int> &VEIntSet, int CCInt, vector<vector<int>> &VEBP, vector<vector<int>> &HEBP, int &VENumb)
+void distinctHEBPEnumeartion(ofstream &myFile, int curCol, map<int, map<int, vector<vector<int>>>> &HEBPiMap, vector<int> &VEIntSet, int CCInt, vector<vector<int>> &VEBP, vector<vector<int>> &HEBP, int &VENumb)
 {
 	if (curCol > M - 2)
 	{
+		int VEInt = 0;
+		int HEInt = 0;
+
+		for (int row = 0; row < N - 1; row++)
+		{
+			for (vector<int>::iterator col = VEBP[row].begin(); col != VEBP[row].end(); col++)
+			{
+				VEInt += pow(2, M*row + *col);
+			}
+		}
+
+		for (int row = 0; row < M - 1; row++)
+		{
+			for (vector<int>::iterator col = HEBP[row].begin(); col != HEBP[row].end(); col++)
+			{
+				HEInt += pow(2, N*row + *col);
+			}
+		}
+		if (VEInt == 2938)myFile << HEInt << endl;
 		//print VEBP and HEBP//
 		bool HEBPIsDistinct = true;
 		HEBPIsDistinct = checkIfDistinctHEBP(VEBP, HEBP);
@@ -70,8 +89,34 @@ void distinctHEBPEnumeartion(int curCol, map<int, map<int, vector<vector<int>>>>
 			
 			/*ii++;
 			cout << ii << endl;*/
-			/*writeEBP(VEBP, myFile);
-			writeEBP(HEBP, myFile);*/
+			/*int VEInt = 0;
+			int HEInt = 0;
+			
+			for (int row = 0; row < N-1; row++)
+			{
+				for (vector<int>::iterator col = VEBP[row].begin(); col != VEBP[row].end(); col++)
+				{
+					VEInt += pow(2, M*row + *col);
+				}
+			}
+			
+			for (int row = 0; row < M-1; row++)
+			{
+				for (vector<int>::iterator col = HEBP[row].begin(); col != HEBP[row].end(); col++)
+				{
+					HEInt += pow(2, N*row + *col);
+				}
+			}
+
+			if (VEInt == 2938 || VEInt == 2940)
+			{
+				myFile << VEInt << " ";
+				writeEBP(VEBP, myFile);
+				myFile << HEInt << " ";
+				writeEBP(HEBP, myFile);
+			}*/
+
+			//writeEBP(HEBP, myFile);
 			/*int HENumb = 0;
 			for (int i = 0; i < HEBP.size(); i++)
 				HENumb += HEBP[i].size();
@@ -100,7 +145,7 @@ void distinctHEBPEnumeartion(int curCol, map<int, map<int, vector<vector<int>>>>
 				if (nextCCInt == 0)
 				{
 					checkZero = true;
-					distinctHEBPEnumeartion(curCol + 1, HEBPiMap, VEIntSet, nextCCInt, VEBP, HEBP, VENumb);
+					distinctHEBPEnumeartion(myFile, curCol + 1, HEBPiMap, VEIntSet, nextCCInt, VEBP, HEBP, VENumb);
 				}
 				//else
 				//{
@@ -108,7 +153,7 @@ void distinctHEBPEnumeartion(int curCol, map<int, map<int, vector<vector<int>>>>
 				//}
 			}
 			else
-				distinctHEBPEnumeartion(curCol + 1, HEBPiMap, VEIntSet, nextCCInt, VEBP, HEBP, VENumb);
+				distinctHEBPEnumeartion(myFile, curCol + 1, HEBPiMap, VEIntSet, nextCCInt, VEBP, HEBP, VENumb);
 			//if (curCol >= 1) 
 			HEBP.pop_back();
 		}
@@ -146,6 +191,7 @@ map<int, map<int, vector<vector<int>>>> hebpMapFromBinaryFile(ifstream &readFile
 		}
 		
 		vector<int> checkIsolated(maxCCNumb+1, 0);
+		vector<int> VEVector = decimalToBinary(VEInt);
 		vector<int> HEVector = decimalToBinary(HEInt);
 		
 		bool isIsolated = false;
@@ -158,13 +204,19 @@ map<int, map<int, vector<vector<int>>>> hebpMapFromBinaryFile(ifstream &readFile
 		{
 			if (*it2 == 0)
 			{
+				
 				isIsolated = true;
 				break;
 			}
 		}
-
+		
 		if (!isIsolated)
 		{
+			/*cout << "CC: "; printEBPi(CCVector);
+			cout << "VE: "; printEBPi(VEVector);
+			cout << "HE: "; printEBPi(HEVector);
+			cout << endl;*/
+			
 			vector<int> tempVector;
 			tempVector.push_back(HEInt); tempVector.push_back(nextCCInt);
 			vector<vector<int>> tempHighVector(1, tempVector);
@@ -268,6 +320,25 @@ void distinctHEBPEnumeartion(int currentColumn, vector<vector<int>> CCNumbMatrix
 	
 	if (currentColumn > M - 2)
 	{
+		int VEInt = 0;
+		int HEInt = 0;
+
+		for (int row = 0; row < N - 1; row++)
+		{
+			for (vector<int>::iterator col = VEBP[row].begin(); col != VEBP[row].end(); col++)
+			{
+				VEInt += pow(2, M*row + *col);
+			}
+		}
+
+		for (int row = 0; row < M - 1; row++)
+		{
+			for (vector<int>::iterator col = HEBP[row].begin(); col != HEBP[row].end(); col++)
+			{
+				HEInt += pow(2, N*row + *col);
+			}
+		}
+		
 		//cout << "CCNumbMAtrix: "; printEBP(CCNumbMatrix); cout << endl;
 		//cout << "final CC#://////////////////// "; printEBPi(CCNumbMatrix[currentColumn]); cout << endl;
 
@@ -289,12 +360,22 @@ void distinctHEBPEnumeartion(int currentColumn, vector<vector<int>> CCNumbMatrix
 		if (HEBPIsDistinct)
 		{
 			correctOne++;
+			if (VEInt == 2938)myFile << HEInt << endl;
+			/*if (VEInt == 2938 || VEInt == 2940)
+			{
+				myFile << VEInt << " ";
+				writeEBP(VEBP, myFile);
+				myFile << HEInt << " ";
+				writeEBP(HEBP, myFile);
+			}*/
+
 			/*ii++;
 			cout << ii << endl;*/
 			//writeEBP(VEBP, myFile);
 			//writeEBP(HEBP, myFile);
 			//cout << "VEBP: "; printEBP(VEBP);
 			//cout << "HEBP: "; printEBP(HEBP);
+
 		}
 	}
 	else 

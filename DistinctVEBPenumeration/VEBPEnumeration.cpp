@@ -20,7 +20,7 @@ void VEBPEnumeartion(ofstream &myFile, double &numberOfOutputs, map<int, map<int
 	readFile.open(fileName, ios::in | ios::binary);
 	VEBPiMap = mapFromBinaryFile(readFile);
 	readFile.close();
-
+	
 	for (OneBitsNumber = startNumberOfBitsInVEBP; OneBitsNumber <= N*N - N; OneBitsNumber++)//enumerate VEBP based on # 1bits on VEBP
 	//for (OneBitsNumber = N-1; OneBitsNumber <= N*N - N; OneBitsNumber++)//enumerate VEBP based on # 1bits on VEBP
 	{
@@ -106,7 +106,6 @@ void SetOneBitNumberOnEachSectionVEBP(int LeftOneBitsNumber, int currentRow, vec
 			//distinctVEBPEnumeration(result, myFile, numberOfOutputs, equalSwitch);
 			
 			vector<vector<int>> VEBP;
-			//distinctVEBPEnumeration(result, myFile, equalSwitch,VEBPiMap, 0, VEBP);
 			distinctVEBPEnumeration(result, myFile, equalSwitch, VEBPiMap, 0, VEBP, HEBPiMap);
 
 			//clock_t begin = clock();
@@ -237,7 +236,7 @@ void completeEachVEBP(int sectionNumber, vector<vector<vector<int>>> &VEBPSet, v
 				//myFile << numberOfOutputs << endl;
 				//numberOfOutputs++;
 				//printEBP(VEBP);
-				//writeEBP(VEBP, myFile);
+				writeEBP(VEBP, myFile);
 				//HEBPEnumeration(VEBP, myFile);
 			}		
 		}
@@ -249,7 +248,7 @@ void completeEachVEBP(int sectionNumber, vector<vector<vector<int>>> &VEBPSet, v
 				//numberOfOutputs++;
 				//cout << "number of outputs from VEBP " << ii << endl;
 				//printEBP(VEBP);
-				//writeEBP(VEBP, myFile);
+				writeEBP(VEBP, myFile);
 				//send message to HEBP enumeration..//
 				//HEBPEnumeration(VEBP, myFile);
 				//////////

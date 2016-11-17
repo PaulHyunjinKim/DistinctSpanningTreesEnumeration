@@ -13,6 +13,7 @@ int main()
 	readFile.open(fileName, ios::in | ios::binary);
 	HEBPiMap = hebpMapFromBinaryFile(readFile);
 	readFile.close();
+	//getchar();
 
 	ofstream EBPFile;
 	EBPFile.open("EBPFile.txt");
