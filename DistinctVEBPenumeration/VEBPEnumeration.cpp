@@ -4,7 +4,7 @@
 #include "EBPOperations.h"
 #include <ctime>
 
-void VEBPEnumeartion(ofstream &myFile, double &numberOfOutputs)
+void VEBPEnumeartion(ofstream &myFile, double &numberOfOutputs, map<int, map<int, vector<vector<int>>>> &HEBPiMap)
 {
 	int OneBitsNumber = 0;
 	int startNumberOfBitsInVEBP = ceilf((float)(M*N - 1) / 2);
@@ -15,7 +15,9 @@ void VEBPEnumeartion(ofstream &myFile, double &numberOfOutputs)
 	//vector<vector<vector<int>>> VEBPiMap;
 		
 	ifstream readFile;
-	readFile.open("VEBPi_3.bin", ios::in | ios::binary);
+	char fileName[20];
+	sprintf_s(fileName, sizeof(fileName), "VEBPi_%d.bin", N);
+	readFile.open(fileName, ios::in | ios::binary);
 	VEBPiMap = mapFromBinaryFile(readFile);
 	readFile.close();
 
@@ -26,7 +28,7 @@ void VEBPEnumeartion(ofstream &myFile, double &numberOfOutputs)
 		vector<int> result;
 		//send message to VEBPEnumeration...//
 		//myFile << "OneBitsNumber: "<< OneBitsNumber << endl;
-		SetOneBitNumberOnEachSectionVEBP(OneBitsNumber, 0, result, 0, myFile, numberOfOutputs, VEBPiMap);
+		SetOneBitNumberOnEachSectionVEBP(OneBitsNumber, 0, result, 0, myFile, numberOfOutputs, VEBPiMap, HEBPiMap);
 	}
 }
 
@@ -89,7 +91,7 @@ vector<vector<vector<int>>> vectorFromBinaryFile(ifstream &readFile)
 }
 
 //void SetOneBitNumberOnEachSectionVEBP(int LeftOneBitsNumber, int currentRow, vector<int> result, int LastOneBitsNumber, ofstream &myFile, double &numberOfOutputs, map<int, vector<vector<int>>> VEBPiMap)
-void SetOneBitNumberOnEachSectionVEBP(int LeftOneBitsNumber, int currentRow, vector<int> &result, int LastOneBitsNumber, ofstream &myFile, double &numberOfOutputs, map<int, vector<vector<int>>> &VEBPiMap)
+void SetOneBitNumberOnEachSectionVEBP(int LeftOneBitsNumber, int currentRow, vector<int> &result, int LastOneBitsNumber, ofstream &myFile, double &numberOfOutputs, map<int, vector<vector<int>>> &VEBPiMap, map<int, map<int, vector<vector<int>>>> &HEBPiMap)
 {
 	currentRow += 1;
 	LeftOneBitsNumber -= LastOneBitsNumber;
@@ -105,7 +107,7 @@ void SetOneBitNumberOnEachSectionVEBP(int LeftOneBitsNumber, int currentRow, vec
 			
 			vector<vector<int>> VEBP;
 			//distinctVEBPEnumeration(result, myFile, equalSwitch,VEBPiMap, 0, VEBP);
-			distinctVEBPEnumeration(result, myFile, equalSwitch, VEBPiMap, 0, VEBP);
+			distinctVEBPEnumeration(result, myFile, equalSwitch, VEBPiMap, 0, VEBP, HEBPiMap);
 
 			//clock_t begin = clock();
 			/*clock_t end = clock();
@@ -121,7 +123,7 @@ void SetOneBitNumberOnEachSectionVEBP(int LeftOneBitsNumber, int currentRow, vec
 		for (LastOneBitsNumber = MinNumber; LastOneBitsNumber <= MaxNumber; LastOneBitsNumber++)
 		{
 			result.push_back(LastOneBitsNumber);
-			SetOneBitNumberOnEachSectionVEBP(LeftOneBitsNumber, currentRow, result, LastOneBitsNumber, myFile, numberOfOutputs, VEBPiMap);
+			SetOneBitNumberOnEachSectionVEBP(LeftOneBitsNumber, currentRow, result, LastOneBitsNumber, myFile, numberOfOutputs, VEBPiMap, HEBPiMap);
 			result.pop_back();
 		}
 	}
@@ -174,7 +176,7 @@ void distinctVEBPEnumeration(vector<int> &result, ofstream &myFile, double &numb
 
 //void distinctVEBPEnumeration(vector<int> result, ofstream &myFile, double &numberOfOutputs, bool equalSwitch, map<int, vector<vector<int>>> VEBPiMap, int numbSection, vector<vector<int>> VEBP, vector<int> VEBPi)
 //void distinctVEBPEnumeration(vector<int> &result, ofstream &myFile, bool equalSwitch, vector<vector<vector<int>>> &VEBPiMap, int numbSection, vector<vector<int>> &VEBP)
-void distinctVEBPEnumeration(vector<int> &result, ofstream &myFile, bool equalSwitch, map<int, vector<vector<int>>> &VEBPiMap, int numbSection, vector<vector<int>> &VEBP)
+void distinctVEBPEnumeration(vector<int> &result, ofstream &myFile, bool equalSwitch, map<int, vector<vector<int>>> &VEBPiMap, int numbSection, vector<vector<int>> &VEBP, map<int, map<int, vector<vector<int>>>> &HEBPiMap)
 {
 	//if(numbSection >=0 )VEBP.push_back(VEBPi);
 	//numbSection++;
@@ -189,7 +191,7 @@ void distinctVEBPEnumeration(vector<int> &result, ofstream &myFile, bool equalSw
 				//numberOfOutputs++;
 				//printEBP(VEBP);
 				//writeEBP(VEBP, myFile);
-				HEBPEnumeration(VEBP, myFile);
+				HEBPEnumeration(VEBP, myFile, HEBPiMap);
 			}
 		}
 		else
@@ -202,7 +204,7 @@ void distinctVEBPEnumeration(vector<int> &result, ofstream &myFile, bool equalSw
 				//printEBP(VEBP);
 				//writeEBP(VEBP, myFile);
 				//send message to HEBP enumeration..//
-				HEBPEnumeration(VEBP, myFile);
+				HEBPEnumeration(VEBP, myFile, HEBPiMap);
 				//////////
 			}
 		}
@@ -218,7 +220,7 @@ void distinctVEBPEnumeration(vector<int> &result, ofstream &myFile, bool equalSw
 
 			//printEBPi(*it);
 			VEBP.push_back(*it);
-			distinctVEBPEnumeration(result, myFile, equalSwitch, VEBPiMap, numbSection + 1, VEBP);
+			distinctVEBPEnumeration(result, myFile, equalSwitch, VEBPiMap, numbSection + 1, VEBP, HEBPiMap);
 			VEBP.pop_back();
 		}
 	}

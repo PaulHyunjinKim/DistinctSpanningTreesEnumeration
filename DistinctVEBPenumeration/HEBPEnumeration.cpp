@@ -1,27 +1,24 @@
 #include "stdafx.h"
 #include "HEBPEnumeration.h"
 #include "EBPOperations.h"
+int correctOne = 0;
+int errorOne = 0;
 
-//int ii = 0;
-void HEBPEnumeration(vector<vector<int>> VEBP, ofstream &myFile)
+void HEBPEnumeration(vector<vector<int>> VEBP, ofstream &myFile, map<int, map<int, vector<vector<int>>>> &HEBPiMap)
 {
 	//recieve message from VEBP enumeration
 	//cout << "VEBP: VEBP:///////////////";printEBP(VEBP);
-	map<int, map<int, vector<vector<int>>>> HEBPiMap;
-
-	ifstream readFile;
-	readFile.open("HEBPiSet_3.bin", ios::in | ios::binary);
-	HEBPiMap = hebpMapFromBinaryFile(readFile);
-	readFile.close();
+	
 	
 	
 	int VENumb = 0;
 	int HENumb = 0;
+	vector<vector<int>> VEBPPrime(M, vector<int>(N, 0));
 	int InitCCInt = 0;
 	for (int i = 0; i < N; i++)
 		InitCCInt += i*pow(N, i);
+
 	
-	vector<vector<int>> VEBPPrime(M, vector<int>(N, 0));
 	vector<int> VEIntSet;
 	VEBPPrimeAndVENumbFromVEBP(VEBP, VEBPPrime, VENumb);
 	VEIntSetfromVEBPPrime(VEBPPrime, VEIntSet);
@@ -32,26 +29,27 @@ void HEBPEnumeration(vector<vector<int>> VEBP, ofstream &myFile)
 	distinctHEBPEnumeartion(0, HEBPiMap, VEIntSet, InitCCInt, VEBP, HEBP, VENumb);
 
 	
-	/*vector<int> maxHEi(M-1,0);
-	vector<int> minHEi(M-1,0);
-	maxMinHeiFromVEBPPrime(VEBPPrime, maxHEi, minHEi);
-	
-	int leftMaxHEi = 0;
-	int leftMinHEi = 0;
-	for (int i = 1; i < M - 1; i++)
-	{
-		leftMaxHEi += maxHEi[i];
-		leftMinHEi += minHEi[i];
-	}
+	//vector<int> maxHEi(M-1,0);
+	//vector<int> minHEi(M-1,0);
+	//maxMinHeiFromVEBPPrime(VEBPPrime, maxHEi, minHEi);
+	//
+	//int leftMaxHEi = 0;
+	//int leftMinHEi = 0;
+	//for (int i = 1; i < M - 1; i++)
+	//{
+	//	leftMaxHEi += maxHEi[i];
+	//	leftMinHEi += minHEi[i];
+	//}
 
 
-	HENumb = M*N - 1 - VENumb;
+	//HENumb = M*N - 1 - VENumb;
 
-	vector<vector<int>> CCNumbMatrix(M, vector<int>(N + 1, 0));
-	CCNumbMatFromVEBPPrime(CCNumbMatrix, VEBPPrime);
-	
-	vector<vector<int>> HEBP;
-	distinctHEBPEnumeartion(0, CCNumbMatrix, maxHEi, minHEi, leftMaxHEi, leftMinHEi, HENumb, VENumb, HEBP, VEBP, myFile);*/
+	//vector<vector<int>> CCNumbMatrix(M, vector<int>(N + 1, 0));
+	//CCNumbMatFromVEBPPrime(CCNumbMatrix, VEBPPrime);
+	//
+	////vector<vector<int>> HEBP;
+	//distinctHEBPEnumeartion(0, CCNumbMatrix, maxHEi, minHEi, leftMaxHEi, leftMinHEi, HENumb, VENumb, HEBP, VEBP, myFile);
+	cout << "correct: " << correctOne << " error: " << errorOne << endl;
 	//getchar();
 }
 
@@ -69,13 +67,22 @@ void distinctHEBPEnumeartion(int curCol, map<int, map<int, vector<vector<int>>>>
 		
 		if (HEBPIsDistinct)
 		{
+			
 			/*ii++;
 			cout << ii << endl;*/
 			/*writeEBP(VEBP, myFile);
 			writeEBP(HEBP, myFile);*/
-			cout << "VEBP: "; printEBP(VEBP);
-			cout << "HEBP: "; printEBP(HEBP);
-			cout << "finished" << endl;
+			int HEnum = 0;
+			for (int i = 0; i < HEBP.size(); i++)
+				HEnum += HEBP[i].size();
+			if (HEnum + VENumb == M*N - 1)
+			{
+				correctOne++;
+				/*cout << "VEBP: "; printEBP(VEBP);
+				cout << "HEBP: "; printEBP(HEBP);*/
+			}
+			
+			//cout << "finished" << endl;
 		}
 	}
 	else
@@ -107,7 +114,7 @@ void distinctHEBPEnumeartion(int curCol, map<int, map<int, vector<vector<int>>>>
 			//if (curCol >= 1) 
 			HEBP.pop_back();
 		}
-		if (curCol == M - 1 && !checkZero) cout << "error" << endl;
+		if (curCol == M - 2 && !checkZero) errorOne++;//cout << "error" << endl;
 	}
 
 }
@@ -252,12 +259,13 @@ void distinctHEBPEnumeartion(int currentColumn, vector<vector<int>> CCNumbMatrix
 		cout << "rotateHEBPIsDistinct " << HEBPIsDistinct << endl;*/
 		if (HEBPIsDistinct)
 		{
+			correctOne++;
 			/*ii++;
 			cout << ii << endl;*/
-			writeEBP(VEBP, myFile);
-			writeEBP(HEBP, myFile);
-			/*cout << "VEBP: "; printEBP(VEBP);
-			cout << "HEBP: "; printEBP(HEBP);*/
+			//writeEBP(VEBP, myFile);
+			//writeEBP(HEBP, myFile);
+			//cout << "VEBP: "; printEBP(VEBP);
+			//cout << "HEBP: "; printEBP(HEBP);
 		}
 	}
 	else 
