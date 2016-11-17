@@ -10,17 +10,17 @@ void VEBPEnumeartion(ofstream &myFile, double &numberOfOutputs)
 	int startNumberOfBitsInVEBP = ceilf((float)(M*N - 1) / 2);
 	if (M != N)
 		startNumberOfBitsInVEBP = N - 1;
-	
+		
 	map<int, vector<vector<int>>> VEBPiMap;
 	//vector<vector<vector<int>>> VEBPiMap;
-	
-	
+		
 	ifstream readFile;
-	readFile.open("VEBPi_5.bin", ios::in | ios::binary);
+	readFile.open("VEBPi_3.bin", ios::in | ios::binary);
 	VEBPiMap = mapFromBinaryFile(readFile);
-
+	readFile.close();
 
 	for (OneBitsNumber = startNumberOfBitsInVEBP; OneBitsNumber <= N*N - N; OneBitsNumber++)//enumerate VEBP based on # 1bits on VEBP
+	//for (OneBitsNumber = N-1; OneBitsNumber <= N*N - N; OneBitsNumber++)//enumerate VEBP based on # 1bits on VEBP
 	{
 		//OneBitsNumber = 30;
 		vector<int> result;
@@ -57,7 +57,7 @@ map<int, vector<vector<int>>> mapFromBinaryFile(ifstream &readFile)
 			VEBPiMap[readSize].push_back(temp);
 		}
 	}
-	readFile.close();
+	
 
 	return VEBPiMap;
 }
@@ -104,7 +104,8 @@ void SetOneBitNumberOnEachSectionVEBP(int LeftOneBitsNumber, int currentRow, vec
 			//distinctVEBPEnumeration(result, myFile, numberOfOutputs, equalSwitch);
 			
 			vector<vector<int>> VEBP;
-			distinctVEBPEnumeration(result, myFile, equalSwitch,VEBPiMap, 0, VEBP);
+			//distinctVEBPEnumeration(result, myFile, equalSwitch,VEBPiMap, 0, VEBP);
+			distinctVEBPEnumeration(result, myFile, equalSwitch, VEBPiMap, 0, VEBP);
 
 			//clock_t begin = clock();
 			/*clock_t end = clock();
@@ -188,7 +189,7 @@ void distinctVEBPEnumeration(vector<int> &result, ofstream &myFile, bool equalSw
 				//numberOfOutputs++;
 				//printEBP(VEBP);
 				//writeEBP(VEBP, myFile);
-				//HEBPEnumeration(VEBP, myFile);
+				HEBPEnumeration(VEBP, myFile);
 			}
 		}
 		else
@@ -201,7 +202,7 @@ void distinctVEBPEnumeration(vector<int> &result, ofstream &myFile, bool equalSw
 				//printEBP(VEBP);
 				//writeEBP(VEBP, myFile);
 				//send message to HEBP enumeration..//
-				//HEBPEnumeration(VEBP, myFile);
+				HEBPEnumeration(VEBP, myFile);
 				//////////
 			}
 		}

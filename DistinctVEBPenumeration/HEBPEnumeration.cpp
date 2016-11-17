@@ -10,10 +10,17 @@ void HEBPEnumeration(vector<vector<int>> VEBP, ofstream &myFile)
 	
 	int VENumb = 0;
 	int HENumb = 0;
-	vector<vector<int>> VEBPPrime(M, vector<int>(N, 0));
-	VEBPPrimeAndVENumbFromVEBP(VEBP, VEBPPrime, VENumb);
+	int InitCCInt = 0;
+	for (int i = 0; i < N; i++)
+		InitCCInt += i*pow(N, i);
 	
-	vector<int> maxHEi(M-1,0);
+	vector<vector<int>> VEBPPrime(M, vector<int>(N, 0));
+	vector<int> VEIntSet;
+	VEBPPrimeAndVENumbFromVEBP(VEBP, VEBPPrime, VENumb);
+	VEIntSetfromVEBPPrime(VEBPPrime, VEIntSet);
+
+	
+	/*vector<int> maxHEi(M-1,0);
 	vector<int> minHEi(M-1,0);
 	maxMinHeiFromVEBPPrime(VEBPPrime, maxHEi, minHEi);
 	
@@ -32,8 +39,22 @@ void HEBPEnumeration(vector<vector<int>> VEBP, ofstream &myFile)
 	CCNumbMatFromVEBPPrime(CCNumbMatrix, VEBPPrime);
 	
 	vector<vector<int>> HEBP;
-	distinctHEBPEnumeartion(0, CCNumbMatrix, maxHEi, minHEi, leftMaxHEi, leftMinHEi, HENumb, VENumb, HEBP, VEBP, myFile);
+	distinctHEBPEnumeartion(0, CCNumbMatrix, maxHEi, minHEi, leftMaxHEi, leftMinHEi, HENumb, VENumb, HEBP, VEBP, myFile);*/
 	//getchar();
+}
+
+
+void VEIntSetfromVEBPPrime(vector<vector<int>> &VEBPPrime, vector<int> &VEIntSet)
+{
+	for (int i = 0; i < M; i++)
+	{
+		int VEInt = 0;
+		for (int j = 1; j < N;j++)
+		{
+			VEInt += VEBPPrime[i][j] * pow(2, j - 1);
+		}
+		VEIntSet.push_back(VEInt);
+	}
 }
 
 void maxMinHeiFromVEBPPrime(vector<vector<int>> VEBPPrime, vector<int> &maxHEi, vector<int> &minHEi)
@@ -76,7 +97,7 @@ void CCNumbMatFromVEBPPrime(vector<vector<int>> &CCNumbMatrix, vector<vector<int
 	}
 }
 
-void VEBPPrimeAndVENumbFromVEBP(vector<vector<int>> VEBP, vector<vector<int>> &VEBPPrime, int &VENumb)
+void VEBPPrimeAndVENumbFromVEBP(vector<vector<int>> &VEBP, vector<vector<int>> &VEBPPrime, int &VENumb)
 {
 	for (int i = 0; i < VEBP.size(); i++)
 	{
