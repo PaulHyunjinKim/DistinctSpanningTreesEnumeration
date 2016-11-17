@@ -14,4 +14,5 @@ void printEBP(vector<vector<int>> EBP);
 void printEBPi(vector<int> EBPi);
 void allCombinationsOfKInN(int startIndex, int leftElements, int n, vector<int> result, vector<vector<int>> &EBP);
 vector<int> decimalToBinary(int decimal);
+vector<int> decimalToNnary(int decimal);
 

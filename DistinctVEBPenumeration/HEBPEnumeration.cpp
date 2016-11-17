@@ -72,16 +72,14 @@ void distinctHEBPEnumeartion(int curCol, map<int, map<int, vector<vector<int>>>>
 			cout << ii << endl;*/
 			/*writeEBP(VEBP, myFile);
 			writeEBP(HEBP, myFile);*/
-			int HEnum = 0;
+			/*int HENumb = 0;
 			for (int i = 0; i < HEBP.size(); i++)
-				HEnum += HEBP[i].size();
-			if (HEnum + VENumb == M*N - 1)
-			{
+				HENumb += HEBP[i].size();
+			if(HENumb + VENumb == M*N -1)*/
 				correctOne++;
-				/*cout << "VEBP: "; printEBP(VEBP);
-				cout << "HEBP: "; printEBP(HEBP);*/
-			}
-			
+			/*cout << "VEBP: "; printEBP(VEBP);
+			cout << "HEBP: "; printEBP(HEBP);*/
+					
 			//cout << "finished" << endl;
 		}
 	}
@@ -121,6 +119,8 @@ void distinctHEBPEnumeartion(int curCol, map<int, map<int, vector<vector<int>>>>
 
 map<int, map<int, vector<vector<int>>>> hebpMapFromBinaryFile(ifstream &readFile)
 {
+	
+	
 	map<int, map<int, vector<vector<int>>>> HEBPiMap;
 	readFile.seekg(0, ios::end);
 	int length = readFile.tellg();
@@ -137,28 +137,57 @@ map<int, map<int, vector<vector<int>>>> hebpMapFromBinaryFile(ifstream &readFile
 		readFile.read(reinterpret_cast<char*>(&VEInt), sizeof(int));
 		readFile.read(reinterpret_cast<char*>(&HEInt), sizeof(int));
 		readFile.read(reinterpret_cast<char*>(&nextCCInt), sizeof(int));
-		
-		vector<int> tempVector;
-		tempVector.push_back(HEInt);tempVector.push_back(nextCCInt);
-		vector<vector<int>> tempHighVector(1, tempVector);
-		map<int, vector<vector<int>>> tempMap;
-		tempMap.insert(pair<int, vector<vector<int>>>(VEInt, tempHighVector));
-		
-		if (HEBPiMap.end() == HEBPiMap.find(CCInt))
+
+		vector<int> CCVector = decimalToNnary(CCInt);
+		int maxCCNumb = -1;
+		for (int i = 0; i < CCVector.size(); i++)
 		{
-			HEBPiMap.insert(pair<int, map<int, vector<vector<int>>>>(CCInt, tempMap));
+			if (maxCCNumb < CCVector[i]) maxCCNumb = CCVector[i];
 		}
-		else
+		
+		vector<int> checkIsolated(maxCCNumb+1, 0);
+		vector<int> HEVector = decimalToBinary(HEInt);
+		
+		bool isIsolated = false;
+		for (vector<int>::iterator it = HEVector.begin(); it != HEVector.end(); it++)
 		{
-			if (HEBPiMap[CCInt].end() == HEBPiMap[CCInt].find(VEInt))
+			int curNumb = CCVector[*it-1];
+			checkIsolated[curNumb] = 1;
+		}
+		for (vector<int>::iterator it2 = checkIsolated.begin(); it2 != checkIsolated.end(); it2++)
+		{
+			if (*it2 == 0)
 			{
-				HEBPiMap[CCInt].insert(pair<int, vector<vector<int>>>(VEInt, tempHighVector));
+				isIsolated = true;
+				break;
+			}
+		}
+
+		if (!isIsolated)
+		{
+			vector<int> tempVector;
+			tempVector.push_back(HEInt); tempVector.push_back(nextCCInt);
+			vector<vector<int>> tempHighVector(1, tempVector);
+			map<int, vector<vector<int>>> tempMap;
+			tempMap.insert(pair<int, vector<vector<int>>>(VEInt, tempHighVector));
+
+			if (HEBPiMap.end() == HEBPiMap.find(CCInt))
+			{
+				HEBPiMap.insert(pair<int, map<int, vector<vector<int>>>>(CCInt, tempMap));
 			}
 			else
 			{
-				HEBPiMap[CCInt][VEInt].push_back(tempVector);
+				if (HEBPiMap[CCInt].end() == HEBPiMap[CCInt].find(VEInt))
+				{
+					HEBPiMap[CCInt].insert(pair<int, vector<vector<int>>>(VEInt, tempHighVector));
+				}
+				else
+				{
+					HEBPiMap[CCInt][VEInt].push_back(tempVector);
+				}
 			}
 		}
+		
 	}
 
 

@@ -323,3 +323,27 @@ vector<int> decimalToBinary(int decimal)
 	}
 	return result;
 }
+
+vector<int> decimalToNnary(int decimal)
+{
+	vector<int> result(N, 0);
+	int rem = decimal;
+	int root = decimal;
+	int i = 0;
+	while (root != 0)
+	{
+		root = decimal / N;
+		rem = decimal % N;
+		if (rem >= 1)
+		{
+			//result.push_back(i + 1);
+			result[i] = rem;
+			
+		}
+		
+		//cout << i << " ";
+		i++;
+		decimal = root;
+	}
+	return result;
+}
