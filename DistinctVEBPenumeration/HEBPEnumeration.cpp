@@ -55,7 +55,7 @@ void HEBPEnumeration(vector<vector<int>> VEBP, ofstream &myFile)
 
 void distinctHEBPEnumeartion(int curCol, map<int, map<int, vector<vector<int>>>> &HEBPiMap, vector<int> &VEIntSet, int CCInt, vector<vector<int>> &VEBP, vector<vector<int>> &HEBP, int &VENumb)
 {
-	if (curCol > M - 2)
+	if (curCol > M - 1)
 	{
 		//print VEBP and HEBP//
 		bool HEBPIsDistinct = true;
@@ -71,23 +71,22 @@ void distinctHEBPEnumeartion(int curCol, map<int, map<int, vector<vector<int>>>>
 			cout << ii << endl;*/
 			/*writeEBP(VEBP, myFile);
 			writeEBP(HEBP, myFile);*/
-			
+			cout << "VEBP: "; printEBP(VEBP);
+			cout << "HEBP: "; printEBP(HEBP);
+			cout << "finished" << endl;
 		}
-		cout << "VEBP: "; printEBP(VEBP);
-		cout << "HEBP: "; printEBP(HEBP);
-		cout << "finished" << endl;
-		
 	}
 	else
 	{
-		int VEInt = VEIntSet[curCol+1];
+		int VEInt = VEIntSet[curCol];
 		bool checkZero = false;
 		for (int i=0;i< HEBPiMap[CCInt][VEInt].size();i++)
 		{
 			int HEInt = HEBPiMap[CCInt][VEInt][i][0];
 			int nextCCInt = HEBPiMap[CCInt][VEInt][i][1];
 			
-			HEBP.push_back(decimalToBinary(HEInt));
+			if(curCol >=1)
+				HEBP.push_back(decimalToBinary(HEInt));
 			if (curCol == M - 2)//last column
 			{
 				
@@ -103,9 +102,9 @@ void distinctHEBPEnumeartion(int curCol, map<int, map<int, vector<vector<int>>>>
 			}
 			else
 				distinctHEBPEnumeartion(curCol + 1, HEBPiMap, VEIntSet, nextCCInt, VEBP, HEBP, VENumb);
-			HEBP.pop_back();
+			if (curCol >= 1) HEBP.pop_back();
 		}
-		if (curCol == M - 2 && !checkZero) cout << "error" << endl;
+		if (curCol == M - 1 && !checkZero) cout << "error" << endl;
 	}
 
 }
