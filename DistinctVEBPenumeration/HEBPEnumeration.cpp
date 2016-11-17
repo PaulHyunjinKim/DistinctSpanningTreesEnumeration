@@ -7,6 +7,13 @@ void HEBPEnumeration(vector<vector<int>> VEBP, ofstream &myFile)
 {
 	//recieve message from VEBP enumeration
 	//cout << "VEBP: VEBP:///////////////";printEBP(VEBP);
+	map<int, map<int, vector<vector<int>>>> HEBPiMap;
+
+	ifstream readFile;
+	readFile.open("HEBPiSet_3.bin", ios::in | ios::binary);
+	HEBPiMap = hebpMapFromBinaryFile(readFile);
+	readFile.close();
+	
 	
 	int VENumb = 0;
 	int HENumb = 0;
@@ -18,6 +25,9 @@ void HEBPEnumeration(vector<vector<int>> VEBP, ofstream &myFile)
 	vector<int> VEIntSet;
 	VEBPPrimeAndVENumbFromVEBP(VEBP, VEBPPrime, VENumb);
 	VEIntSetfromVEBPPrime(VEBPPrime, VEIntSet);
+
+	vector<vector<int>> HEBP;
+	distinctHEBPEnumeartion(0, HEBPiMap, VEIntSet, InitCCInt, VEBP, HEBP, VENumb);
 
 	
 	/*vector<int> maxHEi(M-1,0);
@@ -43,6 +53,108 @@ void HEBPEnumeration(vector<vector<int>> VEBP, ofstream &myFile)
 	//getchar();
 }
 
+void distinctHEBPEnumeartion(int curCol, map<int, map<int, vector<vector<int>>>> &HEBPiMap, vector<int> &VEIntSet, int CCInt, vector<vector<int>> &VEBP, vector<vector<int>> &HEBP, int &VENumb)
+{
+	if (curCol > M - 2)
+	{
+		//print VEBP and HEBP//
+		bool HEBPIsDistinct = true;
+		HEBPIsDistinct = checkIfDistinctHEBP(VEBP, HEBP);
+		if ((M == N) && (M % 2 == 1) && (VENumb == (M*N - 1) / 2) && HEBPIsDistinct)
+		{
+			HEBPIsDistinct = checkRotationalSymmetryOfHEBP(VEBP, HEBP);
+		}
+		
+		if (HEBPIsDistinct)
+		{
+			/*ii++;
+			cout << ii << endl;*/
+			/*writeEBP(VEBP, myFile);
+			writeEBP(HEBP, myFile);*/
+			
+		}
+		cout << "VEBP: "; printEBP(VEBP);
+		cout << "HEBP: "; printEBP(HEBP);
+		cout << "finished" << endl;
+		
+	}
+	else
+	{
+		int VEInt = VEIntSet[curCol+1];
+		bool checkZero = false;
+		for (int i=0;i< HEBPiMap[CCInt][VEInt].size();i++)
+		{
+			int HEInt = HEBPiMap[CCInt][VEInt][i][0];
+			int nextCCInt = HEBPiMap[CCInt][VEInt][i][1];
+			
+			HEBP.push_back(decimalToBinary(HEInt));
+			if (curCol == M - 2)//last column
+			{
+				
+				if (nextCCInt == 0)
+				{
+					checkZero = true;
+					distinctHEBPEnumeartion(curCol + 1, HEBPiMap, VEIntSet, nextCCInt, VEBP, HEBP, VENumb);
+				}
+				//else
+				//{
+				//	//cout << "error!" << endl;//error!!!//
+				//}
+			}
+			else
+				distinctHEBPEnumeartion(curCol + 1, HEBPiMap, VEIntSet, nextCCInt, VEBP, HEBP, VENumb);
+			HEBP.pop_back();
+		}
+		if (curCol == M - 2 && !checkZero) cout << "error" << endl;
+	}
+
+}
+
+map<int, map<int, vector<vector<int>>>> hebpMapFromBinaryFile(ifstream &readFile)
+{
+	map<int, map<int, vector<vector<int>>>> HEBPiMap;
+	readFile.seekg(0, ios::end);
+	int length = readFile.tellg();
+	readFile.seekg(0, ios::beg);
+	//cout << "length"<<length << endl;
+	int CCInt = 0;
+	int VEInt = 0;
+	int HEInt = 0;
+	int nextCCInt = 0;
+	vector<int> temp;
+	while (length != readFile.tellg())
+	{
+		readFile.read(reinterpret_cast<char*>(&CCInt), sizeof(int));
+		readFile.read(reinterpret_cast<char*>(&VEInt), sizeof(int));
+		readFile.read(reinterpret_cast<char*>(&HEInt), sizeof(int));
+		readFile.read(reinterpret_cast<char*>(&nextCCInt), sizeof(int));
+		
+		vector<int> tempVector;
+		tempVector.push_back(HEInt);tempVector.push_back(nextCCInt);
+		vector<vector<int>> tempHighVector(1, tempVector);
+		map<int, vector<vector<int>>> tempMap;
+		tempMap.insert(pair<int, vector<vector<int>>>(VEInt, tempHighVector));
+		
+		if (HEBPiMap.end() == HEBPiMap.find(CCInt))
+		{
+			HEBPiMap.insert(pair<int, map<int, vector<vector<int>>>>(CCInt, tempMap));
+		}
+		else
+		{
+			if (HEBPiMap[CCInt].end() == HEBPiMap[CCInt].find(VEInt))
+			{
+				HEBPiMap[CCInt].insert(pair<int, vector<vector<int>>>(VEInt, tempHighVector));
+			}
+			else
+			{
+				HEBPiMap[CCInt][VEInt].push_back(tempVector);
+			}
+		}
+	}
+
+
+	return HEBPiMap;
+}
 
 void VEIntSetfromVEBPPrime(vector<vector<int>> &VEBPPrime, vector<int> &VEIntSet)
 {

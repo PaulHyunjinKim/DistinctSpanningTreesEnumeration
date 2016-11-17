@@ -300,3 +300,26 @@ bool EqualEBP(vector<vector<int>> EBP1, vector<vector<int>> EBP2, int numbSectio
 
 	return equalCheck;
 }
+
+vector<int> decimalToBinary(int decimal)
+{
+	vector<int> result;
+	int rem = decimal;
+	int root = decimal;
+	int i = 0;
+	while (root != 0)
+	{
+		root = decimal / 2;
+		rem = decimal % 2;
+		if (rem == 1)
+		{
+			result.push_back(i+1);
+			//cout << i << " ";
+		}
+			
+		//cout << i << " ";
+		i++;
+		decimal = root;
+	}
+	return result;
+}

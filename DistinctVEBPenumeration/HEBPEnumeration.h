@@ -2,6 +2,7 @@
 
 void HEBPEnumeration(vector<vector<int>> VEBP, ofstream &myFile);
 void distinctHEBPEnumeartion(int currentColumn, vector<vector<int>> CCNumbMatrix,vector<int> maxHEi, vector<int> minHEi, int leftMaxHEi, int leftMinHEi, int HENumb, int VENumb, vector<vector<int>> HEBP, vector<vector<int>> VEBP, ofstream &myFile);
+void distinctHEBPEnumeartion(int curCol, map<int, map<int, vector<vector<int>>>> &HEBPiMap, vector<int> &VEIntSet, int CCInt, vector<vector<int>> &VEBP, vector<vector<int>> &HEBP, int &VENumb);
 map<int, vector<vector<int>>> generateTreeForHEBPi(vector<int> CCNumb, vector<int> VEBPPrime_iplus1);
 void VEBPPrimeAndVENumbFromVEBP(vector<vector<int>> &VEBP, vector<vector<int>> &VEBPPrime, int &VENumb);
 void VEIntSetfromVEBPPrime(vector<vector<int>> &VEBPPrime, vector<int> &VEIntSet);
@@ -12,3 +13,4 @@ void CCNumbMatFromVEBPPrime(vector<vector<int>> &CCNumbMatrix, vector<vector<int
 bool newCCNumb_iplus1(int currentColumn, vector<vector<int>> &CCNumbMatrix, vector<int> HEBPi);
 void initCCNumbTree(map<int, vector<int>> &CCNumbTree, vector<vector<int>> CCNumbMatrix, int currentColumn);
 void maxMinHeiFromVEBPPrime(vector<vector<int>> VEBPPrime, vector<int> &maxHEi, vector<int> &minHEi);
+map<int, map<int, vector<vector<int>>>> hebpMapFromBinaryFile(ifstream &readFile);
