@@ -9,7 +9,7 @@ int main()
 	map<int, map<int, vector<vector<int>>>> HEBPiMap;
 	ifstream readFile;
 	char fileName[20];
-	sprintf_s(fileName, sizeof(fileName), "HEBPiSet_%d.bin", N);
+	sprintf_s(fileName, sizeof(fileName), "newHEBPiSet_%d.bin", N);
 	readFile.open(fileName, ios::in | ios::binary);
 	HEBPiMap = hebpMapFromBinaryFile(readFile);
 	readFile.close();

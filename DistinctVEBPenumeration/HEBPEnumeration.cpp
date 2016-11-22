@@ -26,30 +26,30 @@ void HEBPEnumeration(vector<vector<int>> VEBP, ofstream &myFile, map<int, map<in
 	InitCCInt = HEBPiMap[InitCCInt][VEIntSet[0]][0][1];
 	
 	vector<vector<int>> HEBP;
-	//distinctHEBPEnumeartion(myFile, 0, HEBPiMap, VEIntSet, InitCCInt, VEBP, HEBP, VENumb);
+	distinctHEBPEnumeartion(myFile, 0, HEBPiMap, VEIntSet, InitCCInt, VEBP, HEBP, VENumb);
 
 	
-	vector<int> maxHEi(M-1,0);
-	vector<int> minHEi(M-1,0);
-	maxMinHeiFromVEBPPrime(VEBPPrime, maxHEi, minHEi);
-	
-	int leftMaxHEi = 0;
-	int leftMinHEi = 0;
-	for (int i = 1; i < M - 1; i++)
-	{
-		leftMaxHEi += maxHEi[i];
-		leftMinHEi += minHEi[i];
-	}
+	//vector<int> maxHEi(M-1,0);
+	//vector<int> minHEi(M-1,0);
+	//maxMinHeiFromVEBPPrime(VEBPPrime, maxHEi, minHEi);
+	//
+	//int leftMaxHEi = 0;
+	//int leftMinHEi = 0;
+	//for (int i = 1; i < M - 1; i++)
+	//{
+	//	leftMaxHEi += maxHEi[i];
+	//	leftMinHEi += minHEi[i];
+	//}
 
 
-	HENumb = M*N - 1 - VENumb;
+	//HENumb = M*N - 1 - VENumb;
 
-	vector<vector<int>> CCNumbMatrix(M, vector<int>(N + 1, 0));
-	CCNumbMatFromVEBPPrime(CCNumbMatrix, VEBPPrime);
-	
-	//vector<vector<int>> HEBP;
-	distinctHEBPEnumeartion(0, CCNumbMatrix, maxHEi, minHEi, leftMaxHEi, leftMinHEi, HENumb, VENumb, HEBP, VEBP, myFile);
-	//cout << "correct: " << correctOne << " error: " << errorOne << endl;
+	//vector<vector<int>> CCNumbMatrix(M, vector<int>(N + 1, 0));
+	//CCNumbMatFromVEBPPrime(CCNumbMatrix, VEBPPrime);
+	//
+	////vector<vector<int>> HEBP;
+	//distinctHEBPEnumeartion(0, CCNumbMatrix, maxHEi, minHEi, leftMaxHEi, leftMinHEi, HENumb, VENumb, HEBP, VEBP, myFile);
+	cout << "correct: " << correctOne << " error: " << errorOne << endl;
 	//getchar();
 }
 
@@ -75,7 +75,7 @@ void distinctHEBPEnumeartion(ofstream &myFile, int curCol, map<int, map<int, vec
 				HEInt += pow(2, N*row + *col);
 			}
 		}
-		if (VEInt == 2938)myFile << HEInt << endl;
+		//if (VEInt == 2938)myFile << HEInt << endl;
 		//print VEBP and HEBP//
 		bool HEBPIsDistinct = true;
 		HEBPIsDistinct = checkIfDistinctHEBP(VEBP, HEBP);
@@ -191,7 +191,7 @@ map<int, map<int, vector<vector<int>>>> hebpMapFromBinaryFile(ifstream &readFile
 		}
 		
 		vector<int> checkIsolated(maxCCNumb+1, 0);
-		vector<int> VEVector = decimalToBinary(VEInt);
+		//vector<int> VEVector = decimalToBinary(VEInt);
 		vector<int> HEVector = decimalToBinary(HEInt);
 		
 		bool isIsolated = false;
