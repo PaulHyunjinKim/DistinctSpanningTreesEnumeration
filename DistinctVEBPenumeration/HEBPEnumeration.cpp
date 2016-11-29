@@ -167,9 +167,8 @@ void distinctHEBPEnumeartion(ofstream &myFile, int curCol, map<int, map<int, vec
 			//if (curCol >= 1) 
 			HEBP.pop_back();
 		}
-		if (curCol == M - 2 && !checkZero) errorOne++;//cout << "error" << endl;
+		if (curCol == M - 2 && !checkZero) { errorOne++; checkZero = false; }//cout << "error" << endl;
 	}
-
 }
 
 map<int, map<int, vector<vector<int>>>> hebpMapFromBinaryFile(ifstream &readFile)

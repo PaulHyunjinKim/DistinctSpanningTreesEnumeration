@@ -16,8 +16,8 @@
 #include <map>
 
 using namespace std;
-#define M 6//#columns
-#define N 6  //#rows
+#define M 5//#columns
+#define N 5  //#rows
 
 
 
