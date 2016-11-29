@@ -8,20 +8,23 @@ int main()
 
 	map<int, map<int, vector<vector<int>>>> HEBPiMap;
 	ifstream readFile;
-	char fileName[20];
+	char fileName[100];
 	sprintf_s(fileName, sizeof(fileName), "newHEBPiSet_%d.bin", N);
 	readFile.open(fileName, ios::in | ios::binary);
 	HEBPiMap = hebpMapFromBinaryFile(readFile);
 	readFile.close();
 	//getchar();
-
+	
 	ofstream EBPFile;
 	//EBPFile.open("EBPFile.txt");
-	EBPFile.open("VEBPPrimeFile.bin", ios::out | ios::binary);
+	char newfileName[100];
+	sprintf_s(newfileName, sizeof(newfileName), "VEBPBitNumberOnEachSection_%d.bin", N);
+	EBPFile.open(newfileName, ios::out | ios::binary);
 
 	double numberOfOuputs = 14;
 
 	VEBPEnumeartion(EBPFile, numberOfOuputs, HEBPiMap);
+	
 	EBPFile.close();
 	cout << "Finished...hit Enter to exit.." << endl;
 	

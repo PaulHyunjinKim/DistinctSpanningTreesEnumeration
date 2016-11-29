@@ -186,6 +186,7 @@ map<int, map<int, vector<vector<int>>>> hebpMapFromBinaryFile(ifstream &readFile
 	int HEInt = 0;
 	int nextCCInt = 0;
 	vector<int> temp;
+	
 	while (length != readFile.tellg())
 	{
 		readFile.read(reinterpret_cast<char*>(&CCInt), sizeof(int));
@@ -193,7 +194,7 @@ map<int, map<int, vector<vector<int>>>> hebpMapFromBinaryFile(ifstream &readFile
 		readFile.read(reinterpret_cast<char*>(&HEInt), sizeof(int));
 		readFile.read(reinterpret_cast<char*>(&nextCCInt), sizeof(int));
 
-		vector<int> CCVector = decimalToNnary(CCInt);
+		/*vector<int> CCVector = decimalToNnary(CCInt);
 		int maxCCNumb = -1;
 		for (int i = 0; i < CCVector.size(); i++)
 		{
@@ -201,10 +202,10 @@ map<int, map<int, vector<vector<int>>>> hebpMapFromBinaryFile(ifstream &readFile
 		}
 		
 		vector<int> checkIsolated(maxCCNumb+1, 0);
-		//vector<int> VEVector = decimalToBinary(VEInt);
-		vector<int> HEVector = decimalToBinary(HEInt);
+		vector<int> VEVector = decimalToBinary(VEInt);
+		vector<int> HEVector = decimalToBinary(HEInt);*/
 		
-		bool isIsolated = false;
+		/*bool isIsolated = false;
 		for (vector<int>::iterator it = HEVector.begin(); it != HEVector.end(); it++)
 		{
 			int curNumb = CCVector[*it-1];
@@ -218,9 +219,9 @@ map<int, map<int, vector<vector<int>>>> hebpMapFromBinaryFile(ifstream &readFile
 				isIsolated = true;
 				break;
 			}
-		}
+		}*/
 		
-		if (!isIsolated)
+		//if (!isIsolated)
 		{
 			/*cout << "CC: "; printEBPi(CCVector);
 			cout << "VE: "; printEBPi(VEVector);
@@ -232,7 +233,7 @@ map<int, map<int, vector<vector<int>>>> hebpMapFromBinaryFile(ifstream &readFile
 			vector<vector<int>> tempHighVector(1, tempVector);
 			map<int, vector<vector<int>>> tempMap;
 			tempMap.insert(pair<int, vector<vector<int>>>(VEInt, tempHighVector));
-
+			
 			if (HEBPiMap.end() == HEBPiMap.find(CCInt))
 			{
 				HEBPiMap.insert(pair<int, map<int, vector<vector<int>>>>(CCInt, tempMap));
@@ -252,7 +253,7 @@ map<int, map<int, vector<vector<int>>>> hebpMapFromBinaryFile(ifstream &readFile
 		
 	}
 
-
+	
 	return HEBPiMap;
 }
 
@@ -370,7 +371,7 @@ void distinctHEBPEnumeartion(int currentColumn, vector<vector<int>> CCNumbMatrix
 		if (HEBPIsDistinct)
 		{
 			correctOne++;
-			if (VEInt == 2938)myFile << HEInt << endl;
+			//if (VEInt == 2938)myFile << HEInt << endl;
 			/*if (VEInt == 2938 || VEInt == 2940)
 			{
 				myFile << VEInt << " ";

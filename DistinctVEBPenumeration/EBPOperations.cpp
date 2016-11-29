@@ -10,7 +10,7 @@ bool checkIfDistinct(vector<vector<int>> EBP)
 	symmetricEBPs[0] = inverseEBP(EBP, M);
 	symmetricEBPs[1] = inverseEBP(switchEBP(EBP, N), M);
 	symmetricEBPs[2] = switchEBP(EBP, N);
-
+	
 	for (int i = 0; i < 3; i++)
 	{
 		if (EqualEBP(EBP, LargerEBP(EBP, symmetricEBPs[i],N),N))

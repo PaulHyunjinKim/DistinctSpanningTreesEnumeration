@@ -106,9 +106,17 @@ void SetOneBitNumberOnEachSectionVEBP(int LeftOneBitsNumber, int currentRow, vec
 			//clock_t begin = clock();
 			//distinctVEBPEnumeration(result, myFile, numberOfOutputs, equalSwitch);
 			
+			/*for (vector<int>::iterator it = result.begin(); it != result.end(); it++)
+				myFile.write(reinterpret_cast<char*>(&(*it)), sizeof(int));
+			int equalInt = 0;
+			if (equalSwitch) equalInt = 1;
+				myFile.write(reinterpret_cast<char*>(&equalInt), sizeof(int));*/
+			
 			vector<vector<int>> VEBP;
+			
 			distinctVEBPEnumeration(result, myFile, equalSwitch, VEBPiMap, 0, VEBP, HEBPiMap);
-
+			
+			
 			//clock_t begin = clock();
 			/*clock_t end = clock();
 			double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
@@ -191,13 +199,16 @@ void distinctVEBPEnumeration(vector<int> &result, ofstream &myFile, bool equalSw
 				//numberOfOutputs++;
 				//printEBP(VEBP);
 				//writeEBP(VEBP, myFile);
+				
 				HEBPEnumeration(VEBP, myFile, HEBPiMap);
 			}
 		}
 		else
 		{
+			
 			if (checkIfDistinct(VEBP))
 			{
+				
 				//myFile << numberOfOutputs << endl;
 				//numberOfOutputs++;
 				//cout << "number of outputs from VEBP " << ii << endl;
@@ -211,6 +222,7 @@ void distinctVEBPEnumeration(vector<int> &result, ofstream &myFile, bool equalSw
 	}
 	else
 	{
+		
 		int mapIndex = result[numbSection];
 		//cout << "mapIndex " << mapIndex << endl;
 		
