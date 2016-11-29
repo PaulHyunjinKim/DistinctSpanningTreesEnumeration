@@ -13,22 +13,32 @@ void HEBPEnumeration(vector<vector<int>> VEBP, ofstream &myFile, map<int, map<in
 	
 	int VENumb = 0;
 	int HENumb = 0;
+	
 	vector<vector<int>> VEBPPrime(M, vector<int>(N, 0));
 	int InitCCInt = 0;
 	for (int i = 0; i < N; i++)
 		InitCCInt += i*pow(N, i);
 
-	
 	vector<int> VEIntSet;
 	VEBPPrimeAndVENumbFromVEBP(VEBP, VEBPPrime, VENumb);
-	VEIntSetfromVEBPPrime(VEBPPrime, VEIntSet);
 	
+	
+	VEIntSetfromVEBPPrime(VEBPPrime, VEIntSet);
+	/*int maxVEInt = pow(2, N) - 1;
+	unsigned int wholeVEInt=0;
+	for (int i = 0; i < VEIntSet.size(); i++)
+		wholeVEInt += VEIntSet[i] * pow(maxVEInt, i);
+	myFile.write(reinterpret_cast<char*>(&wholeVEInt), sizeof(unsigned int));*/
+	
+
 	InitCCInt = HEBPiMap[InitCCInt][VEIntSet[0]][0][1];
 	
 	vector<vector<int>> HEBP;
 	distinctHEBPEnumeartion(myFile, 0, HEBPiMap, VEIntSet, InitCCInt, VEBP, HEBP, VENumb);
-
+	/////////////////////***********************************************************************************************************
 	
+
+
 	//vector<int> maxHEi(M-1,0);
 	//vector<int> minHEi(M-1,0);
 	//maxMinHeiFromVEBPPrime(VEBPPrime, maxHEi, minHEi);

@@ -16,7 +16,8 @@ int main()
 	//getchar();
 
 	ofstream EBPFile;
-	EBPFile.open("EBPFile.txt");
+	//EBPFile.open("EBPFile.txt");
+	EBPFile.open("VEBPPrimeFile.bin", ios::out | ios::binary);
 
 	double numberOfOuputs = 14;
 
