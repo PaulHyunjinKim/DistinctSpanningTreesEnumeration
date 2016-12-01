@@ -18,7 +18,8 @@ int main()
 	ofstream EBPFile;
 	//EBPFile.open("EBPFile.txt");
 	char newfileName[100];
-	sprintf_s(newfileName, sizeof(newfileName), "VEBPBitNumberOnEachSection_%d.bin", N);
+	//sprintf_s(newfileName, sizeof(newfileName), "VEBPBitNumberOnEachSection_%d.bin", N);
+	sprintf_s(newfileName, sizeof(newfileName), "EBPFile_%d.bin", N);
 	EBPFile.open(newfileName, ios::out | ios::binary);
 
 	double numberOfOuputs = 14;

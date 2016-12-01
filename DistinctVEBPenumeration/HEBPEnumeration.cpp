@@ -59,7 +59,7 @@ void HEBPEnumeration(vector<vector<int>> VEBP, ofstream &myFile, map<int, map<in
 	//
 	////vector<vector<int>> HEBP;
 	//distinctHEBPEnumeartion(0, CCNumbMatrix, maxHEi, minHEi, leftMaxHEi, leftMinHEi, HENumb, VENumb, HEBP, VEBP, myFile);
-	cout << "correct: " << correctOne << " error: " << errorOne << endl;
+	//cout << "correct: " << correctOne << " error: " << errorOne << endl;
 	//getchar();
 }
 
@@ -132,8 +132,8 @@ void distinctHEBPEnumeartion(ofstream &myFile, int curCol, map<int, map<int, vec
 				HENumb += HEBP[i].size();
 			if(HENumb + VENumb == M*N -1)*/
 				correctOne++;
-			/*cout << "VEBP: "; printEBP(VEBP);
-			cout << "HEBP: "; printEBP(HEBP);*/
+			cout << "VEBP: "; printEBP(VEBP);
+			cout << "HEBP: "; printEBP(HEBP);
 					
 			//cout << "finished" << endl;
 		}
