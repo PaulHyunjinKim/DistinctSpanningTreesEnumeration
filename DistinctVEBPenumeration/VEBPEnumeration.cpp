@@ -228,8 +228,20 @@ void distinctVEBPEnumeration(vector<int> &result, ofstream &myFile, bool equalSw
 			{
 				//myFile << numberOfOutputs << endl;
 				//numberOfOutputs++;
-				printEBP(VEBP);
+				//printEBP(VEBP);
 				//writeEBP(VEBP, myFile);
+				bitset<M*(N - 1)> tempVEBPbits;
+				for (int i = 0; i < N - 1; i++)
+				{
+					for (vector<int>::iterator it = VEBP[i].begin(); it != VEBP[i].end(); it++)
+					{
+						//vebpBits += pow(2, *it - 1 + i*M);
+						tempVEBPbits[*it - 1 + i*M] = 1;
+					}
+				}
+
+				unsigned long n = tempVEBPbits.to_ulong();
+				myFile.write(reinterpret_cast<char*> (&n), sizeof(n));
 				
 				//HEBPEnumeration(VEBP, myFile, HEBPiMap);
 			}
@@ -242,11 +254,22 @@ void distinctVEBPEnumeration(vector<int> &result, ofstream &myFile, bool equalSw
 				
 				//myFile << numberOfOutputs << endl;
 				//numberOfOutputs++;
-				//cout << "number of outputs from VEBP " << ii << endl;
-				printEBP(VEBP);
+				//printEBP(VEBP);
+				//cout << "number of outputs from VEBP " << ii << 
 				//writeEBP(VEBP, myFile);
 				//send message to HEBP enumeration..//
-				
+				bitset<M*(N - 1)> tempVEBPbits;
+				for (int i = 0; i < N - 1; i++)
+				{
+					for (vector<int>::iterator it = VEBP[i].begin(); it != VEBP[i].end(); it++)
+					{
+						//vebpBits += pow(2, *it - 1 + i*M);
+						tempVEBPbits[*it - 1 + i*M] = 1;
+					}
+				}
+
+				unsigned long n = tempVEBPbits.to_ulong();
+				myFile.write(reinterpret_cast<char*> (&n), sizeof(n));
 				//HEBPEnumeration(VEBP, myFile, HEBPiMap);
 				//////////
 			}

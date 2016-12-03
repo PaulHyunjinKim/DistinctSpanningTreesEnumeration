@@ -14,10 +14,11 @@
 #include <vector>
 #include <algorithm>
 #include <map>
+#include <bitset>
 
 using namespace std;
-#define M 3//#columns
-#define N 3  //#rows
+#define M 6//#columns
+#define N 6  //#rows
 
 
 
